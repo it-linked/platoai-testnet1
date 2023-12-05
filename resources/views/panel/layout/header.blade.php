@@ -42,95 +42,6 @@
 							</span>
                         </a>
                     </li>
-					<li class="nav-item">
-                        <a class="nav-link {{activeRoute('dashboard.search.index')}}" href="{{route('dashboard.search.index')}}" >
-							<span class="nav-link-icon">
-							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
-							</span>
-                            <span class="flex items-center transition-[opacity,transform] nav-link-title grow">
-								{{__('Plato Search')}}
-							</span>
-                        </a>
-                    </li>
-
-					<li class="nav-item">
-                        <a class="nav-link {{activeRoute('dashboard.plato-ai-search.index')}}" href="{{LaravelLocalization::localizeUrl(route('dashboard.user.openai.chat.chat', 'ai-chat-bot'))}}"  hhref="{{route('dashboard.plato-ai-search.index')}}" >
-							<span class="nav-link-icon">
-							<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bulb" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" /><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" /><path d="M9.7 17l4.6 0" /></svg>
-							</span>
-                            <span class="flex items-center transition-[opacity,transform] nav-link-title grow">
-								{{__('Plato Agent')}}
-							</span>
-                        </a>
-                    </li>
-
-					<li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {{activeRoute('dashboard.external-site')}}" href="#navbar-help" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false" >
-								<span class="nav-link-icon">
-									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path d="M3 19l18 0"></path> <path d="M5 6m0 1a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z"></path> </svg>
-								</span>
-                                <span class="flex items-center transition-[opacity,transform] nav-link-title grow">
-								{{__('Network')}}
-								</span>
-                            </a>
-                            <div class="dropdown-menu {{activeRouteBulkShow(['dashboard.external-site'])}}">
-                                <a class="nav-link {{ route('dashboard.external-site', 'plato-network') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-network')}}">
-								{{__('Plato Network')}}
-                                </a>
-							
-                                <a class="nav-link {{ route('dashboard.external-site', 'amplifi') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','amplifi')}}">
-								{{__('Amplifi')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'plato-ainet') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-ainet')}}">
-								{{__('Plato AiNet')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'plato-aistream') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-aistream')}}">
-								{{__('Plato AiStream')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'plato-blockchain') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-blockchain')}}">
-								{{__('Plato Blockcain')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'platodata-io') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','platodata-io')}}">
-								{{__('PlatoData IO')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'plato-esg') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-esg')}}">
-								{{__('Plato ESG')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'plato-gaming') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-gaming')}}">
-								{{__('Plato Gaming')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'plato-health') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-health')}}">
-								{{__('Plato Health')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'plato-net') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-net')}}">
-								{{__('Plato Net')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'coingenius') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','coingenius')}}">
-								{{__('CoinGenius')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'xlera8') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','xlera8')}}">
-								{{__('Xlera8')}}
-                                </a>
-
-								<a class="dropdown-item {{ route('dashboard.external-site', 'zephyrnet') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','zephyrnet')}}">
-								{{__('Zephyrnet')}}
-                                </a>
-
-							</div>
-					</li>
-
-					
-					
                     <li class="nav-item">
                         <a class="nav-link {{activeRoute('dashboard.user.openai.documents.all')}}" href="{{route('dashboard.user.openai.documents.all')}}">
 							<span class="nav-link-icon">
@@ -831,7 +742,7 @@
 					<span class="absolute !end-3 top-1/2 -translate-y-1/2 -translate-x-2 transition-all opacity-0 pointer-events-none peer-focus:!opacity-100 peer-focus:translate-x-0  group-[.is-searching]:hidden group-[.done-searching]:hidden rtl:-scale-x-100">
 						<svg xmlns="http://www.w3.org/2000/svg" height="25" viewBox="0 96 960 960" width="25" fill="currentColor"><path d="m375 816-43-43 198-198-198-198 43-43 241 241-241 241Z"/></svg>
 					</span>
-					<div class="navbar-search-results absolute top-[calc(100%+17px)] !start-0 bg-[#fff] shadow-[0_10px_70px_rgba(0,0,0,0.1)] rounded-md w-[100%] max-h-[800px] overflow-y-auto hidden group-[.done-searching]:block dark:!bg-[--tblr-bg-surface] max-lg:top-auto max-lg:bottom-full max-lg:start-0 max-lg:end-0 max-lg:w-auto" id="search_results" style="z-index: 999;">
+					<div class="navbar-search-results absolute top-[calc(100%+17px)] !start-0 bg-[#fff] shadow-[0_10px_70px_rgba(0,0,0,0.1)] rounded-md w-[100%] max-h-[380px] overflow-y-auto hidden group-[.done-searching]:block dark:!bg-[--tblr-bg-surface] max-lg:top-auto max-lg:bottom-full max-lg:start-0 max-lg:end-0 max-lg:w-auto" id="search_results" style="z-index: 999;">
 						<!-- Search results here -->
 						<h3 class="m-0 py-[0.75rem] px-3 border-solid border-b border-t-0 border-r-0 border-l-0 border-[--tblr-border-color] text-[1rem] font-medium">{{__('Search results')}}</h3>
 						<div class="search-results-container"></div>

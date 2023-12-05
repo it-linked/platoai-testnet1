@@ -35,7 +35,6 @@
 <script src="/assets/js/panel/login_register.js"></script>
 @endguest
 <script src="/assets/js/panel/search.js"></script>
-<script src="/assets/js/panel/brave_search.js?ver=<?php echo rand(10000,1000000);?>"></script>
 
 <script src="/assets/libs/list.js/dist/list.js" defer></script>
 
