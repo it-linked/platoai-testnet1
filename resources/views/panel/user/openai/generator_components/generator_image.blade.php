@@ -10,12 +10,12 @@
                                 <label class="form-selectgroup-item-image-gen" image-generator="dall-e">
                                     <input type="radio" name="icons" value="dall-e" class="form-selectgroup-input"
                                         checked />
-                                    <h3 class="form-selectgroup-label border-none dark:!text-white">DALL-E</h3>
+                                    <h3 class="form-selectgroup-label border-none dark:!text-white">{{__("DALL-E")}}</h3>
                                 </label>
                                 <label class="form-selectgroup-item-image-gen" image-generator="stablediffusion">
                                     <input type="radio" name="icons" value="stablediffusion"
                                         class="form-selectgroup-input" />
-                                    <h3 class="form-selectgroup-label border-none dark:!text-white">Stable Diffusion
+                                    <h3 class="form-selectgroup-label border-none dark:!text-white">{{__("Stable Diffusion")}}
                                     </h3>
                                 </label>
                             </div>

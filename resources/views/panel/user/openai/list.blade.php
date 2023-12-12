@@ -10,7 +10,7 @@
 					{{__('Text Generator & AI Copywriting Assistant')}}
 				</div>
 				<h2 class="page-title mb-[22px]">
-					{{__('AI Writer')}}
+					{{__('Socrates AI Writer')}}
 				</h2>
 				@php 
 					$filter_check = [];

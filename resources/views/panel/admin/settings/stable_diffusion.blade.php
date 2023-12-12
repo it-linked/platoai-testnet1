@@ -1,5 +1,5 @@
 @extends('panel.layout.app')
-@section('title', 'Stable Diffusion Settings')
+@section('title', __('Stable Diffusion Settings'))
 
 @section('content')
     <div class="page-header d-print-none">

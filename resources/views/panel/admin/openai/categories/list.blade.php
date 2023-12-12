@@ -38,7 +38,7 @@
 						<tbody class="align-middle table-tbody text-heading">
 						@foreach($list as $entry)
 							<tr>
-								<td class="sort-name">{{$entry->name}}</td>
+								<td class="sort-name">{{__($entry->name)}}</td>
 								<td class="whitespace-nowrap text-right">
 									@if(env('APP_STATUS') == 'Demo')
 										<a onclick="return toastr.info('This feature is disabled in Demo version.')" class="btn w-[36px] h-[36px] p-0 border hover:bg-[var(--tblr-primary)] hover:text-white" title="{{__('Edit')}}">

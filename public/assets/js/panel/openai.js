@@ -136,9 +136,10 @@ function templateSave( template_id ) {
 	formData.append( 'image', $( "#image" ).val() );
 	formData.append( 'color', $( "#color" ).val() );
 	formData.append( 'prompt', $( "#prompt" ).val() );
-	formData.append( 'input_name', input_name );
-	formData.append( 'input_description', input_description );
-	formData.append( 'input_type', input_type );
+	formData.append( 'input_name', JSON.stringify(input_name) );
+	formData.append( 'input_description', JSON.stringify(input_description));
+	formData.append( 'input_type', JSON.stringify(input_type) );
+	
 
 
 	$.ajax( {
@@ -149,6 +150,9 @@ function templateSave( template_id ) {
 		processData: false,
 		success: function ( data ) {
 			toastr.success( 'Template Saved Succesfully.' );
+			if($(".build_in_template").val()=="0")
+			location.href = '/dashboard/admin/openai';
+			else
 			location.href = '/dashboard/admin/openai/custom';
 			document.getElementById( "custom_template_button" ).disabled = false;
 			document.getElementById( "custom_template_button" ).innerHTML = "Save";

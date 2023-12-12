@@ -27,7 +27,7 @@ if (!in_array('edit', $fields)) {
             <hr class="mt-3 mb-4">
             <style>.dropdown-toggle::after{display:none} </style>
             @foreach ($langs as $lang)
-                @if($lang == 'pt_BR' || $lang == 'edit')
+                @if($lang == 'pt_BR' || $lang == 'edit' || $lang=='D:\magicAI\lang\en')
                     @continue
                 @endif
                 @php $lang_region = LaravelLocalization::getSupportedLocales()[str_replace('_','-',$lang)]['regional']; @endphp

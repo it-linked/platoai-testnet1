@@ -30,7 +30,7 @@ class AIChatController extends Controller
 
     public function openAIChatList()
     {
-        $aiList = OpenaiGeneratorChatCategory::all();
+        $aiList = OpenaiGeneratorChatCategory::orderBy("name")->get();
         return view('panel.user.openai_chat.list', compact('aiList'));
     }
 

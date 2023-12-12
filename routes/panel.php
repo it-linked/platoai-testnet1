@@ -33,6 +33,10 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Gateways\WalletmaxpayController;
 use App\Http\Controllers\GoogleTTSController;
 use App\Http\Controllers\AdsController;
+use App\Http\Controllers\BraveSearchController;
+use App\Http\Controllers\PlatoAISearchController;
+use App\Http\Controllers\PlatoNetworkController;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
@@ -44,6 +48,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
     Route::prefix('dashboard')->middleware('auth')->name('dashboard.')->group(function () {
 
         Route::get('/', [UserController::class, 'redirect'])->name('index');
+
+        Route::resource("/plato-ai-search",PlatoAISearchController::class);
 
         //User Area
         Route::prefix('user')->name('user.')->group(function () {
@@ -493,6 +499,14 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
 
         //Search
         Route::post('/api/search', [SearchController::class, 'search']);
+        Route::post('/api/brave_search', [BraveSearchController::class, 'search']);
+
+        Route::get("/search/{slug?}",[BraveSearchController::class,'index'])->name('search.index');
+        Route::get("/images", function(){
+            return redirect(route("dashboard.search.index","images"));
+        });
+        Route::get("/{slug}",[PlatoNetworkController::class,'index'])->name('external-site');
+
     });
 
     // Override amamarul routes

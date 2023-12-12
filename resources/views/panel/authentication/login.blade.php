@@ -215,7 +215,7 @@
                 </div>
                 <div class="flex flex-col justify-center overflow-hidden bg-center bg-cover col-lg-6 max-lg:hidden"
                     style="background-image: url(/images/bg/bg-auth.jpg)">
-                    <img src="/images/bg/dash-mockup.jpg" alt="MagicAI Dashboard Mockup"
+                    <img src="/images/bg/dashboard-mockup.jpeg" alt="MagicAI Dashboard Mockup"
                         class="rounded-[36px] shadow-[0_24px_88px_rgba(0,0,0,0.55)] translate-x-[27%]">
                 </div>
             </div>

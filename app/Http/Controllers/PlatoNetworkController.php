@@ -27,6 +27,7 @@ class PlatoNetworkController extends Controller
             'coingenius' => 'https://platoblockchain.net/',
             'xlera8' => 'https://xlera8.com/',
             'zephyrnet' => 'https://zephyrnet.com/',
+            'platomusic' => 'https://cra.platomusic.net/discover/',
         ];
     
         $url = $urls[$slug] ?? 'https://platodata.network/';

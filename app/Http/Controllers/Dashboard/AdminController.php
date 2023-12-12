@@ -39,15 +39,17 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Laravel\Cashier\Subscription;
 use App\Models\Coupon;
+use AWS\CRT\HTTP\Response;
 use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         Cache::flush();
 
         if (
-               !Cache::has('sales_this_week')
+            !Cache::has('sales_this_week')
             or !Cache::has('sales_previous_week')
             or !Cache::has('words_this_week')
             or !Cache::has('words_previous_week')
@@ -146,29 +148,33 @@ class AdminController extends Controller
 
         $settings = Setting::first();
         $currencySymbol = Currency::where('id', $settings->default_currency)->first()->symbol;
-         
-        return view('panel.admin.index', compact('activity', 'latestOrders','gatewayError', 'currencySymbol'));
+
+        return view('panel.admin.index', compact('activity', 'latestOrders', 'gatewayError', 'currencySymbol'));
     }
 
     //USER MANAGEMENT
-    public function users(){
+    public function users()
+    {
         // $users = User::all();
         $users = User::paginate(25);
         return view('panel.admin.users.index', compact('users'));
     }
 
-    public function usersEdit($id){
+    public function usersEdit($id)
+    {
         $user = User::whereId($id)->firstOrFail();
         return view('panel.admin.users.edit', compact('user'));
     }
 
-    public function usersDelete($id){
+    public function usersDelete($id)
+    {
         $user = User::whereId($id)->firstOrFail();
         $user->delete();
         return back()->with(['message' => 'Deleted Successfully', 'type' => 'success']);
     }
 
-    public function usersSave(Request $request){
+    public function usersSave(Request $request)
+    {
         $user = User::whereId($request->user_id)->firstOrFail();
 
         $user->name = $request->name;
@@ -184,62 +190,67 @@ class AdminController extends Controller
     }
 
     //OPENAI MANAGEMENT
-    public function openAIList(){
+    public function openAIList()
+    {
         $list = OpenAIGenerator::orderBy('title', 'asc')->get();
         return view('panel.admin.openai.list', compact('list'));
     }
 
-    public function openAIListUpdateStatus(Request $request){
+    public function openAIListUpdateStatus(Request $request)
+    {
         $status = $request->status;
         $openai = OpenAIGenerator::whereId($request->entry_id)->first();
-        if ($status  == 1 or $status == 0){
+        if ($status  == 1 or $status == 0) {
             $openai->active = $status;
             $openai->save();
-        }else{
+        } else {
             return response()->json([], 403);
         }
-
     }
 
-    public function openAIListUpdatePackageStatus(Request $request){
+    public function openAIListUpdatePackageStatus(Request $request)
+    {
         $status = $request->status;
         $openai = OpenAIGenerator::whereId($request->entry_id)->first();
-        if ($status  == 1 or $status == 0){
+        if ($status  == 1 or $status == 0) {
             $openai->premium = $status;
             $openai->save();
-        }else{
+        } else {
             return response()->json([], 403);
         }
-
     }
 
     //OPENAI CHAT CUSTOM TEMPLATES
-    public function openAIChatList(){
+    public function openAIChatList()
+    {
         $list = OpenaiGeneratorChatCategory::orderBy('name', 'asc')->get();
         return view('panel.admin.openai.chat.list', compact('list'));
     }
 
-    public function openAIChatAddOrUpdate($id = null){
-        if ($id == null){
+    public function openAIChatAddOrUpdate($id = null)
+    {
+        if ($id == null) {
             $template = null;
-        }else{
+        } else {
             $template = OpenaiGeneratorChatCategory::where('id', $id)->firstOrFail();
         }
 
         return view('panel.admin.openai.chat.form', compact('template'));
     }
 
-    public function openAIChatDelete($id = null){
+    public function openAIChatDelete($id = null)
+    {
         $template = OpenaiGeneratorChatCategory::where('id', $id)->firstOrFail();
         $template->delete();
         return back()->with(['message' => 'Deleted Successfully', 'type' => 'success']);
     }
 
-    public function openAIChatAddOrUpdateSave(Request $request){
+    public function openAIChatAddOrUpdateSave(Request $request)
+    {
 
-        if ($request->template_id != 'undefined'){
+        if ($request->template_id != 'undefined') {
             $template = OpenaiGeneratorChatCategory::where('id', $request->template_id)->firstOrFail();
-        }else{
+        } else {
             $template = new OpenaiGeneratorChatCategory();
         }
 
@@ -263,7 +274,7 @@ class AdminController extends Controller
         }
 
         $template->name = $request->name;
-        $template->slug = Str::slug($request->name).'-'.Str::random(5);
+        $template->slug = Str::slug($request->name) . '-' . Str::random(5);
         $template->short_name = $request->short_name;
         $template->description = $request->description;
         $template->role = $request->role;
@@ -271,69 +282,84 @@ class AdminController extends Controller
         $template->helps_with = $request->helps_with;
         $template->color = $request->color;
         $template->chat_completions = $request->chat_completions;
-        $template->prompt_prefix = "As a ".$request->role.", ";
+        $template->prompt_prefix = "As a " . $request->role . ", ";
         $template->save();
     }
 
     //OPENAI CUSTOM TEMPLATES
-    public function openAICustomList(){
+    public function openAICustomList()
+    {
         $list = OpenAIGenerator::orderBy('title', 'asc')->where('custom_template', 1)->get();
         return view('panel.admin.openai.custom.list', compact('list'));
     }
 
-    public function openAICustomAddOrUpdate($id = null){
-        if ($id == null){
+    public function openAICustomAddOrUpdate($id = null)
+    {
+        if ($id == null) {
             $template = null;
-        }else{
+        } else {
             $template = OpenAIGenerator::where('id', $id)->firstOrFail();
         }
         $filters = OpenaiGeneratorFilter::orderBy('name', 'desc')->get();
         return view('panel.admin.openai.custom.form', compact('template', 'filters'));
     }
 
-    public function openAICustomDelete($id = null){
+    public function openAICustomDelete($id = null)
+    {
         $template = OpenAIGenerator::where('id', $id)->firstOrFail();
         $template->delete();
         return back()->with(['message' => 'Deleted Successfully', 'type' => 'success']);
     }
 
-    public function openAICustomAddOrUpdateSave(Request $request){
+    public function openAICustomAddOrUpdateSave(Request $request)
+    {
 
-        if ($request->template_id != 'undefined'){
+        if ($request->template_id != 'undefined') {
             $template = OpenAIGenerator::where('id', $request->template_id)->firstOrFail();
-        }else{
+        } else {
             $template = new OpenAIGenerator();
+            $template->custom_template = 0;
+            $template->active = 1;
         }
 
+        if($template->custom_template==0){
+            $template->title=$request->title;
+            $template->save();
+            exit();
+        }
+        else
         $template->title = $request->title;
         $template->description = $request->description;
         $template->image = $request->image;
         $template->color = $request->color;
         $template->prompt = $request->prompt;
 
-        $inputNames = explode( ',', $request->input_name);
-        $inputDescriptions = explode( ',', $request->input_description);
-        $inputTypes = explode( ',', $request->input_type);
 
-        $i = 0;
+        $inputNames = json_decode($_POST['input_name']);
+        $inputDescriptions = json_decode($_POST['input_description']);
+        $inputTypes = json_decode($_POST['input_type']);
+        // $inputNames = explode( ',', $request->input_name);
+        // $inputDescriptions = explode( ',', $request->input_description);
+        // $inputTypes = explode( ',', $request->input_type);
+
+        $count = min(count($inputNames), count($inputDescriptions), count($inputTypes));
+
         $array = [];
-        foreach ($inputNames as $inputName){
-            $array[$i]['name'] = Str::slug($inputName);
+
+        for ($i = 0; $i < $count; $i++) {
+            $array[$i]['name'] = Str::slug($inputNames[$i]);
             $array[$i]['type'] = $inputTypes[$i];
-            $array[$i]['question'] = $inputName;
+            $array[$i]['question'] = $inputNames[$i];
             $array[$i]['description'] = $inputDescriptions[$i];
-            $i++;
         }
 
-        $questions = json_encode($array,JSON_UNESCAPED_SLASHES);
-        $template->active = 1;
-        $template->slug = Str::slug($request->title).'-'.Str::random(6);
+        $questions = json_encode($array, JSON_UNESCAPED_SLASHES);
+        $template->slug = Str::slug($request->title) . '-' . Str::random(6);
         $template->questions = $questions;
         $template->type = 'text';
-        $template->custom_template = 1;
         $template->filters = $request->filters;
-        foreach (explode( ',', $request->filters) as $filter){
-            if (OpenaiGeneratorFilter::where('name', $filter)->first() == null){
+        foreach (explode(',', $request->filters) as $filter) {
+            if (OpenaiGeneratorFilter::where('name', $filter)->first() == null) {
                 $newFilter = new OpenaiGeneratorFilter();
                 $newFilter->name = $filter;
                 $newFilter->save();
@@ -345,31 +371,35 @@ class AdminController extends Controller
     }
 
     //Openai Categories
-    public function openAICategoriesList(){
+    public function openAICategoriesList()
+    {
         $list = OpenaiGeneratorFilter::orderBy('name', 'asc')->get();
         return view('panel.admin.openai.categories.list', compact('list'));
     }
 
-    public function openAICategoriesAddOrUpdate($id = null){
-        if ($id == null){
+    public function openAICategoriesAddOrUpdate($id = null)
+    {
+        if ($id == null) {
             $item = null;
-        }else{
+        } else {
             $item = OpenaiGeneratorFilter::where('id', $id)->firstOrFail();
         }
         return view('panel.admin.openai.categories.form', compact('item'));
     }
 
-    public function openAICategoriesDelete($id = null){
+    public function openAICategoriesDelete($id = null)
+    {
         $item = OpenaiGeneratorFilter::where('id', $id)->firstOrFail();
         $item->delete();
         return back()->with(['message' => 'Deleted Successfully', 'type' => 'success']);
     }
 
-    public function openAICategoriesAddOrUpdateSave(Request $request){
+    public function openAICategoriesAddOrUpdateSave(Request $request)
+    {
 
-        if ($request->item_id != 'undefined'){
+        if ($request->item_id != 'undefined') {
             $item = OpenaiGeneratorFilter::where('id', $request->item_id)->firstOrFail();
-        }else{
+        } else {
             $item = new OpenaiGeneratorFilter();
         }
         $item->name = $request->name;
@@ -380,7 +410,8 @@ class AdminController extends Controller
 
     //Payment
 
-    public function paymentPlans(){
+    public function paymentPlans()
+    {
 
         $gatewayError = false;
         // $gateway = Gateways::where("mode", "sandbox")->first();
@@ -395,66 +426,70 @@ class AdminController extends Controller
         return view('panel.admin.finance.plans.index', compact('plans', 'gatewayError', 'setting'));
     }
 
-    public function paymentPlansSubscriptionNewOrEdit($id = null){
+    public function paymentPlansSubscriptionNewOrEdit($id = null)
+    {
 
         $activeGateways = Gateways::where('is_active', 1)->get();
-        if($activeGateways->count() > 0){
+        if ($activeGateways->count() > 0) {
             $isActiveGateway = 1;
-        }else{
+        } else {
             $isActiveGateway = 0;
         }
 
         $generatedData = null;
-        if($id != null){
+        if ($id != null) {
             $generatedData = GatewayProducts::where('plan_id', $id)->get();
         }
 
-        if ($id == null){
+        if ($id == null) {
             return view('panel.admin.finance.plans.SubscriptionNewOrEdit', compact('isActiveGateway'));
-        }else{
+        } else {
             $subscription = PaymentPlans::where('id', $id)->first();
             return view('panel.admin.finance.plans.SubscriptionNewOrEdit', compact('subscription', 'isActiveGateway', 'generatedData'));
         }
     }
 
-    public function paymentPlansDelete($id){
+    public function paymentPlansDelete($id)
+    {
         return PaymentController::deletePaymentPlan($id);
     }
 
-    public function paymentPlansPrepaidNewOrEdit($id = null){
+    public function paymentPlansPrepaidNewOrEdit($id = null)
+    {
 
         $activeGateways = Gateways::where('is_active', 1)->get();
-        if($activeGateways->count() > 0){
+        if ($activeGateways->count() > 0) {
             $isActiveGateway = 1;
-        }else{
+        } else {
             $isActiveGateway = 0;
         }
 
         $generatedData = null;
-        if($id != null){
+        if ($id != null) {
             $generatedData = GatewayProducts::where('plan_id', $id)->get();
         }
 
-        if ($id == null){
+        if ($id == null) {
             return view('panel.admin.finance.plans.PrepaidNewOrEdit', compact('isActiveGateway'));
-        }else{
+        } else {
             $subscription = PaymentPlans::where('id', $id)->first();
             return view('panel.admin.finance.plans.PrepaidNewOrEdit', compact('subscription', 'isActiveGateway', 'generatedData'));
         }
     }
 
 
-    public function paymentPlansSave(Request $request){
-        if ($request->plan_id != 'undefined'){
+    public function paymentPlansSave(Request $request)
+    {
+        if ($request->plan_id != 'undefined') {
             $plan = PaymentPlans::where('id', $request->plan_id)->firstOrFail();
-        }else{
+        } else {
             $plan = new PaymentPlans();
         }
 
-        if ($request->type == 'subscription'){
+        if ($request->type == 'subscription') {
             $plan->active = 1;
             $plan->name = $request->name;
-            $plan->price = (double)$request->price;
+            $plan->price = (float)$request->price;
             $plan->frequency = $request->frequency;
             $plan->is_featured = (int)$request->is_featured;
             $plan->stripe_product_id = $request->stripe_product_id;
@@ -468,11 +503,10 @@ class AdminController extends Controller
             $plan->trial_days = $request->trial_days;
             $plan->type = $request->type;
             $plan->save();
-
-        }else{
+        } else {
             $plan->active = 1;
             $plan->name = $request->name;
-            $plan->price = (double)$request->price;
+            $plan->price = (float)$request->price;
             $plan->is_featured = (int)$request->is_featured;
             $plan->total_words = (int)$request->total_words;
             $plan->total_images = (int)$request->total_images;
@@ -481,11 +515,11 @@ class AdminController extends Controller
             $plan->save();
         }
 
-        try{
-            $tmp = PaymentController::saveGatewayProducts($plan->id, $request->name, (double)$request->price, $request->frequency, $request->type);
-        }catch(\Exception $ex){
+        try {
+            $tmp = PaymentController::saveGatewayProducts($plan->id, $request->name, (float)$request->price, $request->frequency, $request->type);
+        } catch (\Exception $ex) {
             Log::info($ex->getMessage());
-            error_log("AdminController->paymentPlansSave()->PaymentController::saveGatewayProducts()\n".$ex->getMessage());
+            error_log("AdminController->paymentPlansSave()->PaymentController::saveGatewayProducts()\n" . $ex->getMessage());
             return back()->with(['message' => $ex->getMessage(), 'type' => 'error']);
         }
     }
@@ -495,38 +529,42 @@ class AdminController extends Controller
     /**
      * Index page of Testimonials in Admin
      */
-    public function testimonials(){
+    public function testimonials()
+    {
         $testimonialList = Testimonials::all();
         return view('panel.admin.testimonials.index', compact('testimonialList'));
     }
 
-    public function testimonialsNewOrEdit($id = null){
-        if ($id == null){
+    public function testimonialsNewOrEdit($id = null)
+    {
+        if ($id == null) {
             return view('panel.admin.testimonials.TestimonialNewOrEdit');
-        }else{
+        } else {
             $testimonial = Testimonials::where('id', $id)->first();
             return view('panel.admin.testimonials.TestimonialNewOrEdit', compact('testimonial'));
         }
     }
 
-    public function testimonialsDelete($id){
+    public function testimonialsDelete($id)
+    {
         $testimonial = Testimonials::where('id', $id)->first();
         $testimonial->delete();
         return back()->with(['message' => 'Testimonial is deleted.', 'type' => 'success']);
     }
 
 
-    public function testimonialsSave(Request $request){
-        if ($request->testimonial_id != 'undefined'){
+    public function testimonialsSave(Request $request)
+    {
+        if ($request->testimonial_id != 'undefined') {
             $testimonial = Testimonials::where('id', $request->testimonial_id)->firstOrFail();
-        }else{
+        } else {
             $testimonial = new Testimonials();
         }
 
-        if($request->file('avatar')){
-            $file= $request->file('avatar');
-            $filename= date('YmdHi').$file->getClientOriginalName();
-            $file-> move(public_path('testimonialAvatar'), $filename);
+        if ($request->file('avatar')) {
+            $file = $request->file('avatar');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path('testimonialAvatar'), $filename);
             $testimonial->avatar = $filename;
         }
 
@@ -540,16 +578,17 @@ class AdminController extends Controller
     // Testimonials End
 
     // How it Works
-    public function howitWorksDefaults(){
+    public function howitWorksDefaults()
+    {
         $values = json_decode('{"option": TRUE, "html": ""}');
-        $default_html = 'Want to see? <a class="text-[#FCA7FF]" href="https://codecanyon.net/item/magicai-openai-content-text-image-chat-code-generator-as-saas/45408109" target="_blank">'.__('Join').' Magic</a>';
+        $default_html = 'Want to see? <a class="text-[#FCA7FF]" href="https://codecanyon.net/item/magicai-openai-content-text-image-chat-code-generator-as-saas/45408109" target="_blank">' . __('Join') . ' Magic</a>';
 
         //Check display bottom line
         $bottomline = CustomSettings::where('key', 'howitworks_bottomline')->first();
-        if($bottomline != null){
+        if ($bottomline != null) {
             $values["option"] = $bottomline->value_int ?? 1;
             $values["html"] = $bottomline->value_html ?? $default_html;
-        }else{
+        } else {
             $bottomline = new CustomSettings();
             $bottomline->key = 'howitworks_bottomline';
             $bottomline->title = 'Used in How it Works section bottom line. Controls visibility and HTML value of line.';
@@ -566,7 +605,8 @@ class AdminController extends Controller
     /**
      * Index page of "How it Works" in Admin
      */
-    public function howitWorks(){
+    public function howitWorks()
+    {
         $howitWorksList = HowitWorks::all();
         $defaults = self::howitWorksDefaults();
         return view('panel.admin.howitworks.index', compact('howitWorksList', 'defaults'));
@@ -574,26 +614,29 @@ class AdminController extends Controller
 
 
 
-    public function howitWorksNewOrEdit($id = null){
-        if ($id == null){
+    public function howitWorksNewOrEdit($id = null)
+    {
+        if ($id == null) {
             return view('panel.admin.howitworks.HowitWorksNewOrEdit');
-        }else{
+        } else {
             $howitWorks = HowitWorks::where('id', $id)->first();
             return view('panel.admin.howitworks.HowitWorksNewOrEdit', compact('howitWorks'));
         }
     }
 
-    public function howitWorksDelete($id){
+    public function howitWorksDelete($id)
+    {
         $howitWorks = HowitWorks::where('id', $id)->first();
         $howitWorks->delete();
         return back()->with(['message' => 'How it Works Step is deleted.', 'type' => 'success']);
     }
 
 
-    public function howitWorksSave(Request $request){
-        if ($request->howitWorks_id != 'undefined'){
+    public function howitWorksSave(Request $request)
+    {
+        if ($request->howitWorks_id != 'undefined') {
             $howitWorks = HowitWorks::where('id', $request->howitWorks_id)->firstOrFail();
-        }else{
+        } else {
             $howitWorks = new HowitWorks();
         }
 
@@ -602,27 +645,27 @@ class AdminController extends Controller
         $howitWorks->save();
     }
 
-    public function howitWorksBottomLineSave(Request $request){
+    public function howitWorksBottomLineSave(Request $request)
+    {
 
         $bottomline = CustomSettings::where('key', 'howitworks_bottomline')->first();
-        if($bottomline != null){
+        if ($bottomline != null) {
 
             $save = 0;
-            if($request->option != 'undefined' && $request->option != null){
-                $bottomline->value_int = $request->option == 1 ? 1 : 0 ;
-                $save=1;
+            if ($request->option != 'undefined' && $request->option != null) {
+                $bottomline->value_int = $request->option == 1 ? 1 : 0;
+                $save = 1;
             }
 
-            if($request->text != 'undefined' && $request->text != null){
-                $default_html = 'Want to see? <a class="text-[#FCA7FF]" href="https://codecanyon.net/item/magicai-openai-content-text-image-chat-code-generator-as-saas/45408109" target="_blank">'.__('Join').' Magic</a>';
-                $bottomline->value_html = $request->text ?? $default_html ;
-                $save=1;
+            if ($request->text != 'undefined' && $request->text != null) {
+                $default_html = 'Want to see? <a class="text-[#FCA7FF]" href="https://codecanyon.net/item/magicai-openai-content-text-image-chat-code-generator-as-saas/45408109" target="_blank">' . __('Join') . ' Magic</a>';
+                $bottomline->value_html = $request->text ?? $default_html;
+                $save = 1;
             }
 
-            if($save == 1){
+            if ($save == 1) {
                 $bottomline->save();
             }
-
         }
     }
 
@@ -633,38 +676,42 @@ class AdminController extends Controller
     /**
      * Index page of Clients in Admin
      */
-    public function clients(){
+    public function clients()
+    {
         $clientList = Clients::all();
         return view('panel.admin.clients.index', compact('clientList'));
     }
 
-    public function clientsNewOrEdit($id = null){
-        if ($id == null){
+    public function clientsNewOrEdit($id = null)
+    {
+        if ($id == null) {
             return view('panel.admin.clients.ClientNewOrEdit');
-        }else{
+        } else {
             $client = Clients::where('id', $id)->first();
             return view('panel.admin.clients.ClientNewOrEdit', compact('client'));
         }
     }
 
-    public function clientsDelete($id){
+    public function clientsDelete($id)
+    {
         $client = Clients::where('id', $id)->first();
         $client->delete();
         return back()->with(['message' => 'Client deleted.', 'type' => 'success']);
     }
 
 
-    public function clientsSave(Request $request){
-        if ($request->client_id != 'undefined'){
+    public function clientsSave(Request $request)
+    {
+        if ($request->client_id != 'undefined') {
             $client = Clients::where('id', $request->client_id)->firstOrFail();
-        }else{
+        } else {
             $client = new Clients();
         }
 
-        if($request->file('avatar')){
-            $file= $request->file('avatar');
-            $filename= date('YmdHi').$file->getClientOriginalName();
-            $file-> move(public_path('clientAvatar'), $filename);
+        if ($request->file('avatar')) {
+            $file = $request->file('avatar');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path('clientAvatar'), $filename);
             $client->avatar = $filename;
         }
 
@@ -678,12 +725,14 @@ class AdminController extends Controller
 
 
     //Affiliates
-    public function affiliatesList(){
+    public function affiliatesList()
+    {
         $list = UserAffiliate::where('status', 'Waiting')->get();
         $list2 = UserAffiliate::whereNot('status', 'Waiting')->get();
         return view('panel.admin.affiliate.index', compact('list', 'list2'));
     }
-    public function affiliatesListSent($id){
+    public function affiliatesListSent($id)
+    {
         $item = UserAffiliate::whereId($id)->firstOrFail();
         $item->status = 'Sent Succesfully';
         $item->save();
@@ -691,23 +740,27 @@ class AdminController extends Controller
     }
 
     //Coupons
-    public function couponsList(){
+    public function couponsList()
+    {
         $list = Coupon::get();
         return view('panel.admin.coupons.index', compact('list'));
     }
-    public function couponsListUsed($id){
+    public function couponsListUsed($id)
+    {
         $coupon = Coupon::find($id);
         return view('panel.admin.coupons.used', compact('coupon'));
     }
-    public function couponsDelete($id){
+    public function couponsDelete($id)
+    {
         $coup = Coupon::find($id);
-        if($coup){
+        if ($coup) {
             $coup->delete();
             return back()->with('success', 'Coupon deleted successfully');
         }
         return back()->with('error', 'Something went wrong!');
     }
-    public function couponsAdd(Request $request){
+    public function couponsAdd(Request $request)
+    {
         $request->validate([
             'name' => 'required|string|max:255',
             'discount' => 'required|numeric|min:0|max:100',
@@ -715,29 +768,30 @@ class AdminController extends Controller
             'code' => 'required|in:auto,manual',
             'codeInput' => 'required_if:code,manual|max:20',
         ]);
-        
+
         $newCoupon = new Coupon();
         $newCoupon->name = $request->input('name');
         $newCoupon->discount = $request->input('discount');
         $newCoupon->limit = $request->input('limit');
         $newCoupon->created_by = auth()->user()->id;
 
-        
+
         // Check if the "code" field is set to "manual" and set the "codeInput" attribute accordingly.
         if ($request->input('code') === 'manual') {
             if (Coupon::where('code', $request->input('codeInput'))->exists()) {
-                $newCoupon->code = $this->generateUniqueCode(); 
-            }else{
+                $newCoupon->code = $this->generateUniqueCode();
+            } else {
                 $newCoupon->code = $request->input('codeInput');
             }
-        }else{
+        } else {
             $newCoupon->code = $this->generateUniqueCode();
         }
-        
+
         $newCoupon->save();
         return redirect()->back()->with('success', 'Coupon created successfully.');
     }
-    public function couponsEdit(Request $request, $id){
+    public function couponsEdit(Request $request, $id)
+    {
         $request->validate([
             'name' => 'required|string|max:255',
             'discount' => 'required|numeric|min:0|max:100',
@@ -771,13 +825,14 @@ class AdminController extends Controller
 
     private function checkCouponValidity($code)
     {
-        $exist = Coupon::where('code',$code)->first();
+        $exist = Coupon::where('code', $code)->first();
         if ($exist && (!($exist->usersUsed->count() >= $exist->limit) || $exist->limit == -1)) {
             return true;
         }
-        return false; 
+        return false;
     }
-    private function generateUniqueCode() {
+    private function generateUniqueCode()
+    {
         $code = $this->generateRandomCode(); // Generate a random code initially.
         // Check if the generated code already exists in the database.
         while (Coupon::where('code', $code)->exists()) {
@@ -785,25 +840,28 @@ class AdminController extends Controller
         }
         return $code;
     }
-    private function generateRandomCode($length = 7) {
+    private function generateRandomCode($length = 7)
+    {
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $code = '';
-    
+
         for ($i = 0; $i < $length; $i++) {
             $code .= $characters[rand(0, strlen($characters) - 1)];
         }
-    
+
         return $code;
     }
 
     //Frontend
-    public function frontendSettings(){
+    public function frontendSettings()
+    {
         return view('panel.admin.frontend.settings');
     }
-    public function frontendSettingsSave(Request $request){
+    public function frontendSettingsSave(Request $request)
+    {
 
 
-        if (env('APP_STATUS') != 'Demo'){
+        if (env('APP_STATUS') != 'Demo') {
             $settings = Setting::first();
             $settings->site_name = $request->site_name;
             $settings->site_url = substr($request->site_url, -1) === '/' ? substr($request->site_url, 0, -1) : $request->site_url;
@@ -848,7 +906,7 @@ class AdminController extends Controller
             $fSettings->footer_button_url = $request->footer_button_url;
             $fSettings->footer_copyright = $request->footer_copyright;
             $fSettings->save();
-            
+
             $fSecSettings = FrontendSectionsStatusses::first();
             $fSecSettings->preheader_active = $request->preheader_active;
             $fSecSettings->save();
@@ -871,12 +929,12 @@ class AdminController extends Controller
                 'logo_collapsed_dark_2x' => 'collapsed-dark-2x',
             ];
 
-            foreach( $logo_types as $logo => $logo_prefix ) {
+            foreach ($logo_types as $logo => $logo_prefix) {
 
                 if ($request->hasFile($logo)) {
                     $path = 'upload/images/logo/';
                     $image = $request->file($logo);
-                    $image_name = Str::random(4) . '-'. $logo_prefix .'-' . Str::slug($settings->site_name) . '-logo.' . $image->getClientOriginalExtension();
+                    $image_name = Str::random(4) . '-' . $logo_prefix . '-' . Str::slug($settings->site_name) . '-logo.' . $image->getClientOriginalExtension();
 
                     //Resim uzantı kontrolü
                     $imageTypes = ['jpg', 'jpeg', 'png', 'svg', 'webp'];
@@ -889,21 +947,20 @@ class AdminController extends Controller
 
                     $image->move($path, $image_name);
 
-                    $settings->{$logo.'_path'} = $path . $image_name;
+                    $settings->{$logo . '_path'} = $path . $image_name;
                     $settings->{$logo} = $image_name;
                     $settings->save();
                 }
-
             }
 
-            if ($request->hasFile('favicon')){
+            if ($request->hasFile('favicon')) {
                 $path = 'upload/images/favicon/';
                 $image = $request->file('favicon');
-                $image_name = Str::random(4).'-'.Str::slug($settings->site_name).'-favicon.'.$image->getClientOriginalExtension();
+                $image_name = Str::random(4) . '-' . Str::slug($settings->site_name) . '-favicon.' . $image->getClientOriginalExtension();
 
                 //Resim uzantı kontrolü
                 $imageTypes = ['jpg', 'jpeg', 'png', 'svg', 'webp'];
-                if (!in_array(Str::lower($image->getClientOriginalExtension()), $imageTypes)){
+                if (!in_array(Str::lower($image->getClientOriginalExtension()), $imageTypes)) {
                     $data = array(
                         'errors' => ['The file extension must be jpg, jpeg, png, webp or svg.'],
                     );
@@ -912,21 +969,22 @@ class AdminController extends Controller
 
                 $image->move($path, $image_name);
 
-                $settings->favicon_path = $path.$image_name;
+                $settings->favicon_path = $path . $image_name;
                 $settings->favicon = $image_name;
                 $settings->save();
             }
         }
-
     }
 
     //Section Settings
-    public function frontendSectionSettings(){
+    public function frontendSectionSettings()
+    {
         return view('panel.admin.frontend.section_settings');
     }
-    public function frontendSectionSettingsSave(Request $request){
+    public function frontendSectionSettingsSave(Request $request)
+    {
 
-        if (env('APP_STATUS') != 'Demo'){
+        if (env('APP_STATUS') != 'Demo') {
             $settings = FrontendSectionsStatusses::first();
             $settings->features_active = $request->features_active;
             $settings->features_title = $request->features_title;
@@ -976,46 +1034,48 @@ class AdminController extends Controller
             $settings->blog_a_posts_per_page = $request->blog_a_posts_per_page;
 
             $settings->save();
-
         }
-
     }
 
     //Menu
-    public function menuSettings(){
+    public function menuSettings()
+    {
         return view('panel.admin.frontend.menu');
     }
 
-    public function menuSettingsSave(Request $request){
+    public function menuSettingsSave(Request $request)
+    {
 
-        if (env('APP_STATUS') != 'Demo'){
+        if (env('APP_STATUS') != 'Demo') {
             $settings = Setting::first();
             $settings->menu_options = $request->menu_options;
             $settings->save();
         }
-
     }
 
     //Frontend Frequently asked questions, FAQ
-    public function frontendFaq(){
+    public function frontendFaq()
+    {
         $faq = Faq::orderBy('created_at', 'desc')->get();
         return view('panel.admin.frontend.faq.index', compact('faq'));
     }
 
 
-    public function frontendFaqcreateOrUpdate($id = null){
-        if ($id == null){
+    public function frontendFaqcreateOrUpdate($id = null)
+    {
+        if ($id == null) {
             $faq = null;
-        }else{
+        } else {
             $faq = Faq::where('id', $id)->firstOrFail();
         }
         return view('panel.admin.frontend.faq.form', compact('faq'));
     }
 
-    public function frontendFaqcreateOrUpdateSave(Request $request){
-        if ($request->faq_id != 'undefined'){
+    public function frontendFaqcreateOrUpdateSave(Request $request)
+    {
+        if ($request->faq_id != 'undefined') {
             $faq = Faq::where('id', $request->faq_id)->firstOrFail();
-        }else{
+        } else {
             $faq = new Faq();
         }
 
@@ -1024,7 +1084,8 @@ class AdminController extends Controller
         $faq->save();
     }
 
-    public function frontendFaqDelete($id){
+    public function frontendFaqDelete($id)
+    {
         $faq = Faq::where('id', $id)->firstOrFail();
         $faq->delete();
 
@@ -1035,25 +1096,28 @@ class AdminController extends Controller
 
     //Frontend Tools Section
 
-    public function frontendTools(){
+    public function frontendTools()
+    {
         $items = FrontendTools::orderBy('created_at', 'desc')->get();
         return view('panel.admin.frontend.tools.index', compact('items'));
     }
 
 
-    public function frontendToolscreateOrUpdate($id = null){
-        if ($id == null){
+    public function frontendToolscreateOrUpdate($id = null)
+    {
+        if ($id == null) {
             $item = null;
-        }else{
+        } else {
             $item = FrontendTools::where('id', $id)->firstOrFail();
         }
         return view('panel.admin.frontend.tools.form', compact('item'));
     }
 
-    public function frontendToolscreateOrUpdateSave(Request $request){
-        if ($request->item_id != 'undefined'){
+    public function frontendToolscreateOrUpdateSave(Request $request)
+    {
+        if ($request->item_id != 'undefined') {
             $item = FrontendTools::where('id', $request->item_id)->firstOrFail();
-        }else{
+        } else {
             $item = new FrontendTools();
         }
         $item->title = $request->title;
@@ -1081,7 +1145,8 @@ class AdminController extends Controller
         $item->save();
     }
 
-    public function frontendToolsDelete($id){
+    public function frontendToolsDelete($id)
+    {
         $item = FrontendTools::where('id', $id)->firstOrFail();
         $item->delete();
         return back()->with(['message' => 'Item deleted succesfully', 'type' => 'success']);
@@ -1094,25 +1159,28 @@ class AdminController extends Controller
 
 
     //Future of ai section
-    public function frontendFuture(){
+    public function frontendFuture()
+    {
         $items = FrontendFuture::orderBy('created_at', 'desc')->get();
         return view('panel.admin.frontend.future.index', compact('items'));
     }
 
 
-    public function frontendFuturecreateOrUpdate($id = null){
-        if ($id == null){
+    public function frontendFuturecreateOrUpdate($id = null)
+    {
+        if ($id == null) {
             $item = null;
-        }else{
+        } else {
             $item = FrontendFuture::where('id', $id)->firstOrFail();
         }
         return view('panel.admin.frontend.future.form', compact('item'));
     }
 
-    public function frontendFuturecreateOrUpdateSave(Request $request){
-        if ($request->item_id != 'undefined'){
+    public function frontendFuturecreateOrUpdateSave(Request $request)
+    {
+        if ($request->item_id != 'undefined') {
             $item = FrontendFuture::where('id', $request->item_id)->firstOrFail();
-        }else{
+        } else {
             $item = new FrontendFuture();
         }
         $item->title = $request->title;
@@ -1121,7 +1189,8 @@ class AdminController extends Controller
         $item->save();
     }
 
-    public function frontendFutureDelete($id){
+    public function frontendFutureDelete($id)
+    {
         $item = FrontendFuture::where('id', $id)->firstOrFail();
         $item->delete();
         return back()->with(['message' => 'Item deleted succesfully', 'type' => 'success']);
@@ -1133,25 +1202,28 @@ class AdminController extends Controller
 
 
     //Who is for section
-    public function frontendWhois(){
+    public function frontendWhois()
+    {
         $items = FrontendForWho::orderBy('created_at', 'desc')->get();
         return view('panel.admin.frontend.who_is_for.index', compact('items'));
     }
 
 
-    public function frontendWhoiscreateOrUpdate($id = null){
-        if ($id == null){
+    public function frontendWhoiscreateOrUpdate($id = null)
+    {
+        if ($id == null) {
             $item = null;
-        }else{
+        } else {
             $item = FrontendForWho::where('id', $id)->firstOrFail();
         }
         return view('panel.admin.frontend.who_is_for.form', compact('item'));
     }
 
-    public function frontendWhoiscreateOrUpdateSave(Request $request){
-        if ($request->item_id != 'undefined'){
+    public function frontendWhoiscreateOrUpdateSave(Request $request)
+    {
+        if ($request->item_id != 'undefined') {
             $item = FrontendForWho::where('id', $request->item_id)->firstOrFail();
-        }else{
+        } else {
             $item = new FrontendForWho();
         }
         $item->title = $request->title;
@@ -1159,7 +1231,8 @@ class AdminController extends Controller
         $item->save();
     }
 
-    public function frontendWhoisDelete($id){
+    public function frontendWhoisDelete($id)
+    {
         $item = FrontendForWho::where('id', $id)->firstOrFail();
         $item->delete();
         return back()->with(['message' => 'Item deleted succesfully', 'type' => 'success']);
@@ -1169,36 +1242,39 @@ class AdminController extends Controller
     //Generator list
 
 
-    public function frontendGeneratorlist(){
+    public function frontendGeneratorlist()
+    {
         $items = FrontendGenerators::orderBy('created_at', 'desc')->get();
         return view('panel.admin.frontend.generators_list.index', compact('items'));
     }
 
 
-    public function frontendGeneratorlistcreateOrUpdate($id = null){
-        if ($id == null){
+    public function frontendGeneratorlistcreateOrUpdate($id = null)
+    {
+        if ($id == null) {
             $item = null;
-        }else{
+        } else {
             $item = FrontendGenerators::where('id', $id)->firstOrFail();
         }
         return view('panel.admin.frontend.generators_list.form', compact('item'));
     }
 
-    public function frontendGeneratorlistcreateOrUpdateSave(Request $request){
-        if ($request->item_id != 'undefined'){
+    public function frontendGeneratorlistcreateOrUpdateSave(Request $request)
+    {
+        if ($request->item_id != 'undefined') {
             $item = FrontendGenerators::where('id', $request->item_id)->firstOrFail();
-        }else{
+        } else {
             $item = new FrontendGenerators();
         }
 
-        if ($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $path = 'upload/images/generatorlist/';
             $image = $request->file('image');
-            $image_name = Str::random(4).'-'.Str::slug($request->title).'-image.'.$image->getClientOriginalExtension();
+            $image_name = Str::random(4) . '-' . Str::slug($request->title) . '-image.' . $image->getClientOriginalExtension();
 
             //Resim uzantı kontrolü
             $imageTypes = ['jpg', 'jpeg', 'png', 'svg', 'webp'];
-            if (!in_array(Str::lower($image->getClientOriginalExtension()), $imageTypes)){
+            if (!in_array(Str::lower($image->getClientOriginalExtension()), $imageTypes)) {
                 $data = array(
                     'errors' => ['The file extension must be jpg, jpeg, png, webp or svg.'],
                 );
@@ -1207,7 +1283,7 @@ class AdminController extends Controller
 
             $image->move($path, $image_name);
 
-            $item->image = $path.$image_name;
+            $item->image = $path . $image_name;
         }
 
 
@@ -1224,10 +1300,10 @@ class AdminController extends Controller
         $item->save();
     }
 
-    public function frontendGeneratorlistDelete($id){
+    public function frontendGeneratorlistDelete($id)
+    {
         $item = FrontendGenerators::where('id', $id)->firstOrFail();
         $item->delete();
         return back()->with(['message' => 'Item deleted succesfully', 'type' => 'success']);
     }
 }
-

@@ -16,7 +16,7 @@
                         {{ __('Back to dashboard') }}
                     </a>
                     <h2 class="mb-2 page-title">
-                        {{ __('AI Article Wizard') }}
+                        {{ __('Aristotle AI Article Wizard') }}
                     </h2>
                 </div>
                 <div class="flex sm:justify-end justify-between items-center flex-wrap mt-3 lg:grow-0 grow">

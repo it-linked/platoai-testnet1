@@ -42,7 +42,7 @@
                 <option value="" disabled selected>{{__('Add new language ↓')}}</option>
                 @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
                     @if( !in_array($localeCode, getDefinedLangs()) )
-                        <option value="{{$localeCode}}"><span class="text-[21px] !me-2">{{ country2flag(substr($properties['regional'], strrpos($properties['regional'], '_') + 1)) }} </span>{{ucfirst($properties['native'])}}</option>
+                        <option value="{{$localeCode}}"><span class="text-[21px] !me-2">{{ country2flag(substr($properties['regional'], strrpos($properties['regional'], '_') + 1)) }} </span>{{ucfirst($properties['name'])}}</option>
                     @endif
                 @endforeach
             </select>

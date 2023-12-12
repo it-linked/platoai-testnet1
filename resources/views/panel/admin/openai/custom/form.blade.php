@@ -28,6 +28,8 @@
 				<div class="col-md-5 mx-auto">
 					<form id="custom_template_form" onsubmit="return templateSave({{$template!=null ? $template->id : null}});" action="">
 
+					<input type="hidden" name="build_in_template" value="{{$template->custom_template}}" class="build_in_template">
+
 						<div class="flex items-center !p-4 !py-3 !gap-3 rounded-xl text-[17px] bg-[rgba(157,107,221,0.1)] font-semibold mb-10">
 							<span class="inline-flex items-center justify-center !w-6 !h-6 rounded-full bg-[#9D6BDD] text-white text-[15px] font-bold">1</span>
 							{{__('Template')}}
@@ -155,7 +157,7 @@
 												{{__('Input Description')}}
 												<x-info-tooltip text="{{__('A description for the input.')}}" />
 											</label>
-											<input type="text" class="form-control input_description" placeholder="{{__('Enter Description Here')}}" value="{{$question->description}}">
+											<input type="text" class="form-control input_description" placeholder="{{__('Enter Description Here')}}" value="{{$question->description??''}}">
 										</div>
 										<button class="remove-inputs-group inline-flex items-center justify-center !w-6 !h-6 p-0 border-none rounded-md absolute !top-4 !end-5 bg-[transparent] text-red-700 transition-all hover:text-white hover:bg-red-600" type="button">
 											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path> <path d="M9 12l6 0"></path> </svg>

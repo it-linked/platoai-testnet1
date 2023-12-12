@@ -45,10 +45,10 @@
                         <tbody class="align-middle table-tbody text-heading">
                         @foreach($list as $entry)
                             <tr>
-                                <td class="sort-name">{{$entry->name}}</td>
-                                <td class="sort-description">{{$entry->description}}</td>
-                                <td class="sort-description">{{$entry->role}}</td>
-                                <td class="sort-package">{{$entry->premium == 1 ?  __('Premium'): __('Regular')}}</td>
+                                <td class="sort-name">{{__($entry->name)}}</td>
+                                <td class="sort-description">{{__($entry->description)}}</td>
+                                <td class="sort-description">{{__($entry->role)}}</td>
+                                <td class="sort-package">{{__($entry->premium == 1 ?  __('Premium'): __('Regular'))}}</td>
 
                                 <td class="sort-date" data-date="{{strtotime($entry->updated_at)}}">
                                     <p class="m-0">{{date("j.n.Y", strtotime($entry->updated_at))}}</p>

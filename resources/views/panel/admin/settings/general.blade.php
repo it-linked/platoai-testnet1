@@ -316,7 +316,7 @@
 						<div class="form-label">{{ __('Manage the features you want to activate for users.') }}</div>
 						<label class="form-check form-switch">
 							<input class="form-check-input" type="checkbox" id="feature_ai_writer" {{ $setting->feature_ai_writer ? 'checked' : '' }}>
-							<span class="form-check-label">{{ __('AI Writer') }}</span>
+							<span class="form-check-label">{{ __('Socrates AI Writer') }}</span>
 						</label>
 						<label class="form-check form-switch">
 							<input class="form-check-input" type="checkbox" id="feature_ai_image" {{ $setting->feature_ai_image ? 'checked' : '' }}>

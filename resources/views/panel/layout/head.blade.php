@@ -39,6 +39,7 @@
     @yield('additional_css')
     @stack('css')
     <link href="/assets/css/magic-ai.css" rel="stylesheet"/>
+    <link href="/assets/css/magic-ai.custom.css" rel="stylesheet"/>
 	@vite('resources/css/app.css')
     @if($setting->dashboard_code_before_head != null)
         {!!$setting->dashboard_code_before_head!!}
