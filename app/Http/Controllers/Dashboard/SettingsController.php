@@ -89,6 +89,7 @@ class SettingsController extends Controller
             $settings->facebook_active = $request->facebook_active ?? 0;
             $settings->google_active = $request->google_active ?? 0;
             $settings->github_active = $request->github_active ?? 0;
+            $settings->hubspot_active = $request->hubspot_active ?? 0;
             $settings->free_plan = $request->free_plan ?? '0,0';
             $settings->save();
 

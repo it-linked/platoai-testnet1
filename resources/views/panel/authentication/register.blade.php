@@ -81,6 +81,17 @@
 									<label class="form-label">{{__('Email Address')}}</label>
 									<input type="email" class="form-control" id="email_register" placeholder="{{__('your@email.com')}}" autocomplete="off" required>
 								</div>
+
+								<div class="mb-[20px]">
+								<label class="form-label">{{__('Phone')}}</label>
+									<input type="text" name="phone" id="phone_register" class="form-control" data-mask="+0000000000000" data-mask-visible="true" placeholder="+000000000000" autocomplete="off"/>
+								</div>
+
+								<div class="mb-[20px]">
+									<label class="form-label">{{__('Address')}}</label>
+									<input type="text" class="form-control" id="address_register" placeholder="{{__('Your postal Address')}}" autocomplete="off" required>
+								</div>
+
 								<div class="mb-[20px]">
 									<label class="form-label">
 										{{__('Password')}}

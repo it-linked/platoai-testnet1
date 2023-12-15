@@ -40,11 +40,16 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => [ 'l
         Route::get('/google/redirect', function () { return Socialite::driver('google')->redirect(); })->name('login.google');
         Route::get('/twitter/redirect', function () { return Socialite::driver('twitter')->redirect(); })->name('login.twitter');
         Route::get('/facebook/redirect', function () { return Socialite::driver('facebook')->redirect(); })->name('login.facebook');
+        // Route::get('/hubspot/redirect', function () { return Socialite::driver('hubspot')->redirect(); })->name('login.hubspot');
+
+        Route::get('/hubspot/login', [AuthenticationController::class, 'redirectToHubSpot'])->name('login.hubspot');
 
         Route::get('/github/callback', [AuthenticationController::class, 'githubCallback']);
         Route::get('/google/callback', [AuthenticationController::class, 'googleCallback']);
         Route::get('/twitter/callback', [AuthenticationController::class, 'twitterCallback']);
-        Route::get('/facebook/callback', [AuthenticationController::class, 'facebookCallback']);    
+        Route::get('/facebook/callback', [AuthenticationController::class, 'facebookCallback']);  
+        Route::get('/hubspot/callback', [AuthenticationController::class, 'handleHubSpotCallback']);
+
 
     });
 

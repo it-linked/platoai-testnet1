@@ -138,6 +138,7 @@
 							<input class="form-check-input" type="checkbox" id="github_active" {{ $setting->github_active ? 'checked' : '' }}>
 							<span class="form-check-label">{{ __('Github') }}</span>
 						</label>
+						
 					</div>
 				</div>
 

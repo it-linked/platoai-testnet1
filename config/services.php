@@ -46,4 +46,13 @@ return [
         'redirect' => '/facebook/callback',
     ],
 
+    'hubspot' => [
+        'client_id' => env('HUBSPOT_CLIENT_ID'),
+        'access_token' => env('HUBSPOT_ACCESS_TOKEN'),
+        'redirect' => env('APP_URL').'/hubspot/callback',
+    ],
+
+
+
 ];
+ 

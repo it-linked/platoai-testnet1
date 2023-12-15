@@ -101,71 +101,56 @@
 								{{__('Amplifi')}}
 							</a-->
 
-							<a class="dropdown-item {{ route('dashboard.external-site', 'plato-ainet') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-ainet')}}">
+							<a class="nav-link {{ route('dashboard.external-site', 'plato-ainet') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-ainet')}}">
 								{{__('Plato AiNet')}}
 							</a>
 
-							<a class="dropdown-item {{ route('dashboard.external-site', 'plato-aistream') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-aistream')}}">
+							<a class="nav-link {{ route('dashboard.external-site', 'plato-aistream') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-aistream')}}">
 								{{__('Plato AiStream')}}
 							</a>
 
-							<a class="dropdown-item {{ route('dashboard.external-site', 'plato-blockchain') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-blockchain')}}">
+							<a class="nav-link {{ route('dashboard.external-site', 'plato-blockchain') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-blockchain')}}">
 								{{__('Plato Blockchain')}}
 							</a>
 
-							<a class="dropdown-item {{ route('dashboard.external-site', 'platodata-io') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','platodata-io')}}">
+							<a class="nav-link {{ route('dashboard.external-site', 'platodata-io') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','platodata-io')}}">
 								{{__('PlatoData IO')}}
 							</a>
 
-							<a class="dropdown-item {{ route('dashboard.external-site', 'plato-esg') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-esg')}}">
+							<a class="nav-link {{ route('dashboard.external-site', 'plato-esg') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-esg')}}">
 								{{__('Plato ESG')}}
 							</a>
 
-							<a class="dropdown-item {{ route('dashboard.external-site', 'plato-gaming') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-gaming')}}">
+							<a class="nav-link {{ route('dashboard.external-site', 'plato-gaming') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-gaming')}}">
 								{{__('Plato Gaming')}}
 							</a>
 
-							<a class="dropdown-item {{ route('dashboard.external-site', 'plato-health') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-health')}}">
+							<a class="nav-link {{ route('dashboard.external-site', 'plato-health') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-health')}}">
 								{{__('Plato Health')}}
 							</a>
 
-							<!--a class="dropdown-item {{ route('dashboard.external-site', 'plato-net') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-net')}}">
+							<!--a class="nav-link {{ route('dashboard.external-site', 'plato-net') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-net')}}">
 								{{__('Plato Net')}}
 							</a-->
 
-							<a class="dropdown-item {{ route('dashboard.external-site', 'coingenius') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','coingenius')}}">
+							<a class="nav-link {{ route('dashboard.external-site', 'coingenius') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','coingenius')}}">
 								{{__('CoinGenius')}}
 							</a>
 
-							<!--a class="dropdown-item {{ route('dashboard.external-site', 'xlera8') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','xlera8')}}">
-								{{__('Xlera8')}}
-							</a-->
+							<a class="nav-link {{ route('dashboard.external-site', 'platomusic') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','platomusic')}}">
+							{{__('Music')}}
+							</a>
 
-							<a class="dropdown-item {{ route('dashboard.external-site', 'zephyrnet') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','zephyrnet')}}">
+							<a class="nav-link {{ route('dashboard.external-site', 'zephyrnet') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','zephyrnet')}}">
 								{{__('Zephyrnet')}}
 							</a>
+
+							
 
 						</div>
 					</li>
 
-					<li class="nav-item">
-						<a class="nav-link {{activeRoute('dashboard.external-site','platomusic')}}" href="{{route('dashboard.external-site','platomusic')}}">
-							<span class="nav-link-icon">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M5 18.48V6l9-4.8v12.48"></path>
-									<circle cx="12" cy="18" r="2"></circle>
-									<circle cx="19" cy="16" r="2"></circle>
-									<circle cx="19" cy="8" r="2"></circle>
-									<circle cx="5" cy="16" r="2"></circle>
-									<circle cx="5" cy="8" r="2"></circle>
-								</svg>
-
-							</span>
-							<span class="flex items-center transition-[opacity,transform] nav-link-title grow">
-								{{__('Music')}}
-							</span>
-						</a>
-					</li>
+					
 
 					<li class="nav-item">
 						<a class="nav-link {{activeRoute('dashboard.user.openai.documents.all')}}" href="{{route('dashboard.user.openai.documents.all')}}">
@@ -474,16 +459,16 @@
 							</span>
 						</a>
 						<div class="dropdown-menu {{activeRouteBulkShow(['dashboard.admin.openai.list', 'dashboard.admin.openai.custom.list', 'dashboard.admin.openai.chat.list', 'dashboard.admin.openai.categories.list', 'dashboard.email-templates.list'])}}">
-							<a class="dropdown-item {{activeRoute('dashboard.admin.openai.list')}}" href="{{route('dashboard.admin.openai.list')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.openai.list')}}" href="{{route('dashboard.admin.openai.list')}}">
 								{{__('Built-in Templates')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.openai.custom.list')}}" href="{{route('dashboard.admin.openai.custom.list')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.openai.custom.list')}}" href="{{route('dashboard.admin.openai.custom.list')}}">
 								{{__('Custom Templates')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.openai.categories.list')}}" href="{{route('dashboard.admin.openai.categories.list')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.openai.categories.list')}}" href="{{route('dashboard.admin.openai.categories.list')}}">
 								{{__('AI Writer Categories')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.openai.chat.list')}}" href="{{route('dashboard.admin.openai.chat.list')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.openai.chat.list')}}" href="{{route('dashboard.admin.openai.chat.list')}}">
 								{{__('Chat Templates')}}
 							</a>
 						</div>
@@ -502,38 +487,38 @@
 							</span>
 						</a>
 						<div class="dropdown-menu {{activeRouteBulkShow(['dashboard.admin.frontend.settings', 'dashboard.admin.frontend.faq.index', 'dashboard.admin.frontend.tools.index', 'dashboard.admin.testimonials.index', 'dashboard.admin.frontend.future.index', 'dashboard.admin.frontend.whois.index', 'dashboard.admin.frontend.generatorlist.index', 'dashboard.admin.clients.index','dashboard.admin.howitWorks.index', 'dashboard.admin.frontend.sectionsettings', 'dashboard.admin.frontend.menusettings' ])}}">
-							<a class="dropdown-item {{activeRoute('dashboard.admin.frontend.settings')}}" href="{{route('dashboard.admin.frontend.settings')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.frontend.settings')}}" href="{{route('dashboard.admin.frontend.settings')}}">
 								{{__('Frontend Settings')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.frontend.sectionsettings')}}" href="{{route('dashboard.admin.frontend.sectionsettings')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.frontend.sectionsettings')}}" href="{{route('dashboard.admin.frontend.sectionsettings')}}">
 								{{__('Frontend Section Settings')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.frontend.menusettings')}}" href="{{route('dashboard.admin.frontend.menusettings')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.frontend.menusettings')}}" href="{{route('dashboard.admin.frontend.menusettings')}}">
 								{{__('Menu')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.frontend.faq.index')}}" href="{{route('dashboard.admin.frontend.faq.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.frontend.faq.index')}}" href="{{route('dashboard.admin.frontend.faq.index')}}">
 								{{__('F.A.Q')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.frontend.tools.index')}}" href="{{route('dashboard.admin.frontend.tools.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.frontend.tools.index')}}" href="{{route('dashboard.admin.frontend.tools.index')}}">
 								{{__('Tools Section')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.frontend.future.index')}}" href="{{route('dashboard.admin.frontend.future.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.frontend.future.index')}}" href="{{route('dashboard.admin.frontend.future.index')}}">
 								{{__('Features Section')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.testimonials.index')}}" href="{{route('dashboard.admin.testimonials.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.testimonials.index')}}" href="{{route('dashboard.admin.testimonials.index')}}">
 								{{__('Testimonials Section')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.clients.index')}}" href="{{route('dashboard.admin.clients.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.clients.index')}}" href="{{route('dashboard.admin.clients.index')}}">
 								{{__('Clients Section')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.howitWorks.index')}}" href="{{route('dashboard.admin.howitWorks.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.howitWorks.index')}}" href="{{route('dashboard.admin.howitWorks.index')}}">
 								{{__('How it Works Section')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.frontend.whois.index')}}" href="{{route('dashboard.admin.frontend.whois.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.frontend.whois.index')}}" href="{{route('dashboard.admin.frontend.whois.index')}}">
 								{{__('Who Can Use Section')}}
 							</a>
 
-							<a class="dropdown-item {{activeRoute('dashboard.admin.frontend.generatorlist.index')}}" href="{{route('dashboard.admin.frontend.generatorlist.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.frontend.generatorlist.index')}}" href="{{route('dashboard.admin.frontend.generatorlist.index')}}">
 								{{__('Generators List Section')}}
 							</a>
 
@@ -553,10 +538,10 @@
 							</span>
 						</a>
 						<div class="dropdown-menu {{activeRouteBulkShow(['dashboard.admin.finance.plans.index', 'dashboard.admin.finance.paymentGateways.index'])}}">
-							<a class="dropdown-item {{activeRoute('dashboard.admin.finance.plans.index')}}" href="{{route('dashboard.admin.finance.plans.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.finance.plans.index')}}" href="{{route('dashboard.admin.finance.plans.index')}}">
 								{{__('Membership Plans')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.finance.paymentGateways.index')}}" href="{{route('dashboard.admin.finance.paymentGateways.index')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.finance.paymentGateways.index')}}" href="{{route('dashboard.admin.finance.paymentGateways.index')}}">
 								{{__('Payment Gateways')}}
 							</a>
 						</div>
@@ -658,43 +643,43 @@
 							</span>
 						</a>
 						<div class="dropdown-menu {{activeRouteBulkShow(['dashboard.admin.settings.general', 'dashboard.admin.settings.invoice', 'dashboard.admin.settings.payment', 'dashboard.admin.settings.openai', 'dashboard.admin.settings.affiliate','dashboard.admin.settings.smtp', 'amamarul.translations.home', 'amamarul.translations.lang', 'dashboard.admin.settings.gdpr', 'dashboard.admin.settings.privacy', 'dashboard.admin.settings.tts', 'dashboard.admin.settings.storage'])}}">
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.general')}}" href="{{route('dashboard.admin.settings.general')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.general')}}" href="{{route('dashboard.admin.settings.general')}}">
 								{{__('General')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.invoice')}}" href="{{route('dashboard.admin.settings.invoice')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.invoice')}}" href="{{route('dashboard.admin.settings.invoice')}}">
 								{{__('Invoice')}}
 							</a>
-							<!-- <a class="dropdown-item {{activeRoute('dashboard.admin.settings.payment')}}" href="{{route('dashboard.admin.settings.payment')}}">
+							<!-- <a class="nav-link {{activeRoute('dashboard.admin.settings.payment')}}" href="{{route('dashboard.admin.settings.payment')}}">
                                     {{__('Payment Stripe Settings')}}
                                 </a> -->
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.openai')}}" href="{{route('dashboard.admin.settings.openai')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.openai')}}" href="{{route('dashboard.admin.settings.openai')}}">
 								{{__('OpenAI')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.stablediffusion')}}" href="{{route('dashboard.admin.settings.stablediffusion')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.stablediffusion')}}" href="{{route('dashboard.admin.settings.stablediffusion')}}">
 								{{__('StableDiffusion')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.unsplashapi')}}" href="{{route('dashboard.admin.settings.unsplashapi')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.unsplashapi')}}" href="{{route('dashboard.admin.settings.unsplashapi')}}">
 								{{__('Unsplash API')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.tts')}}" href="{{route('dashboard.admin.settings.tts')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.tts')}}" href="{{route('dashboard.admin.settings.tts')}}">
 								{{__('Google TTS')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.affiliate')}}" href="{{route('dashboard.admin.settings.affiliate')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.affiliate')}}" href="{{route('dashboard.admin.settings.affiliate')}}">
 								{{__('Affiliate')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.smtp')}}" href="{{route('dashboard.admin.settings.smtp')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.smtp')}}" href="{{route('dashboard.admin.settings.smtp')}}">
 								{{__('SMTP')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.gdpr')}}" href="{{route('dashboard.admin.settings.gdpr')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.gdpr')}}" href="{{route('dashboard.admin.settings.gdpr')}}">
 								{{__('GDPR')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.privacy')}}" href="{{route('dashboard.admin.settings.privacy')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.privacy')}}" href="{{route('dashboard.admin.settings.privacy')}}">
 								{{__('Privacy Policy and Terms')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('amamarul.translations.home')}} {{activeRoute('amamarul.translations.lang')}}" href="{{LaravelLocalization::localizeUrl( route('amamarul.translations.home') )}}">
+							<a class="nav-link {{activeRoute('amamarul.translations.home')}} {{activeRoute('amamarul.translations.lang')}}" href="{{LaravelLocalization::localizeUrl( route('amamarul.translations.home') )}}">
 								{{__('Languages')}}
 							</a>
-							<a class="dropdown-item {{activeRoute('dashboard.admin.settings.storage')}}" href="{{route('dashboard.admin.settings.storage')}}">
+							<a class="nav-link {{activeRoute('dashboard.admin.settings.storage')}}" href="{{route('dashboard.admin.settings.storage')}}">
 								{{__('Storage')}}
 							</a>
 						</div>
@@ -917,14 +902,14 @@
 						<span class="avatar avatar-sm max-lg:w-10 max-lg:h-10" style="background-image: url(@if(!Auth::user()->github_token && !Auth::user()->google_token && !Auth::user()->facebook_token)/@endif{{Auth::user()->avatar}})"></span>
 					</a>
 					<div class="dropdown-menu dropdown-menu-end">
-						<div class="dropdown-item disabled">
+						<div class="nav-link disabled">
 							<div>
 								<div>{{Auth::user()->fullName()}}</div>
 								<div class="mt-1 small text-muted">{{Auth::user()->email}}</div>
 							</div>
 						</div>
 						<div class="dropdown-divider"></div>
-						<div class="dropdown-item disabled">
+						<div class="nav-link disabled">
 							<li class="nav-item">
 								<div class="mb-3 progress progress-separated">
 									@if((int)Auth::user()->remaining_words+(int)Auth::user()->remaining_images != 0)
@@ -949,19 +934,19 @@
 							</li>
 						</div>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item {{activeRoute('dashboard.user.payment.subscription')}}" href="{{route('dashboard.user.payment.subscription')}}">
+						<a class="nav-link {{activeRoute('dashboard.user.payment.subscription')}}" href="{{route('dashboard.user.payment.subscription')}}">
 							{{__('Plan')}}
 						</a>
-						<a class="dropdown-item {{activeRoute('dashboard.user.orders.index')}}" href="{{route('dashboard.user.orders.index')}}">
+						<a class="nav-link {{activeRoute('dashboard.user.orders.index')}}" href="{{route('dashboard.user.orders.index')}}">
 							{{__('Orders')}}
 						</a>
-						<a class="dropdown-item {{activeRouteBulk(['dashboard.user.settings.index'])}}" href="{{route('dashboard.user.settings.index')}}">
+						<a class="nav-link {{activeRouteBulk(['dashboard.user.settings.index'])}}" href="{{route('dashboard.user.settings.index')}}">
 							{{__('Settings')}}
 						</a>
 						<form id="logout" method="POST" action="{{ route('logout') }}">
 							@csrf
 						</form>
-						<a href="javascript:;" onclick="document.getElementById('logout').submit();" class="dropdown-item">{{__('Logout')}}</a>
+						<a href="javascript:;" onclick="document.getElementById('logout').submit();" class="nav-link">{{__('Logout')}}</a>
 					</div>
 				</div>
 			</div>

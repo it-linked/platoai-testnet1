@@ -15,9 +15,18 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Http;
+use App\Services\HubSpotService;
+
 
 class AuthenticationController extends Controller
 {
+    protected $hubSpotService;
+
+    public function __construct(HubSpotService $hubSpotService)
+    {
+        $this->hubSpotService = $hubSpotService;
+    }
     public function githubCallback()
     {
         $githubUser = Socialite::driver('github')->user();
@@ -46,6 +55,11 @@ class AuthenticationController extends Controller
                 'password' => Hash::make(Str::random(12)),
                 'affiliate_code' => Str::upper(Str::random(12)),
             ]);
+
+            if($user){
+                $this->createHubSpotContact($githubUser->getEmail(),$githubUser->getName() ?? $githubUser->getNickname());
+
+            }
         }
 
         Auth::login($user);
@@ -85,6 +99,10 @@ class AuthenticationController extends Controller
                 'password' => Hash::make(Str::random(12)),
                 'affiliate_code' => Str::upper(Str::random(12)),
             ]);
+            if($user){
+                $this->createHubSpotContact($googleUser->getEmail(),$name,$surname);
+
+            }
         }
 
         Auth::login($user);
@@ -123,6 +141,11 @@ class AuthenticationController extends Controller
                     'password' => Hash::make(Str::random(12)),
                     'affiliate_code' => Str::upper(Str::random(12)),
                 ]);
+
+                if($user){
+                    $this->createHubSpotContact($facebookUser->getEmail(),$name,$surname);
+    
+                }
             }
     
             Auth::login($user);
@@ -131,7 +154,37 @@ class AuthenticationController extends Controller
         
     }
 
+    public function handleHubSpotCallback(Request $request)
+    {
+        $clientId = config('services.hubspot.client_id');
+        $clientSecret = config('services.hubspot.client_secret');
+        $redirectUri = config('services.hubspot.redirect');
 
+        $response = Http::asForm()->post('https://api.hubapi.com/oauth/v1/token', [
+            'grant_type' => 'authorization_code',
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
+            'redirect_uri' => $redirectUri,
+            'code' => $request->get('code'),
+        ]);
+
+        $hubspotUser = $response->json();
+
+        // Now you have the HubSpot user information in $hubspotUser
+        // Implement your logic to create or authenticate the user in your app
+
+        return redirect('/dashboard/user');
+    }
+
+    public function redirectToHubSpot()
+    {
+        $clientId = config('services.hubspot.client_id');
+        $redirectUri = config('services.hubspot.redirect');
+
+        $authorizationUrl = "https://app.hubspot.com/oauth/authorize?client_id={$clientId}&redirect_uri={$redirectUri}&scope=oauth%20settings.users.write%20settings.users.read";
+        
+        return redirect($authorizationUrl);
+    }
     public function login(LoginRequest $request)
     {
         $request->authenticate();
@@ -149,11 +202,14 @@ class AuthenticationController extends Controller
     public function registerStore(Request $request)
     {
 
+      
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Password::defaults()],
+            'phone' => ['required'], 'address'=>['required']
+
         ]);
 
         $affCode = null;
@@ -180,10 +236,13 @@ class AuthenticationController extends Controller
             ]);
         } else {
             $settings = Setting::first();
+
             $user = User::create([
                 'name' => $request->name,
                 'surname' => $request->surname,
                 'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
                 'email_confirmation_code' => Str::random(67),
                 'remaining_words' => explode(',', $settings->free_plan)[0],
                 'remaining_images' => explode(',', $settings->free_plan)[1] ?? 0,
@@ -192,6 +251,11 @@ class AuthenticationController extends Controller
                 'affiliate_id' => $affCode,
                 'affiliate_code' => Str::upper(Str::random(12)),
             ]);
+
+            if($user){
+                $this->createHubSpotContact($request->email,$request->name,$request->surname,$request->phone,$request->address);
+            }
+          
         }
 
 
@@ -212,6 +276,30 @@ class AuthenticationController extends Controller
 
 
         return response()->json('OK', 200);
+    }
+
+    private function createHubSpotContact($email='', $firstname='', $lastname='', $phone='', $address='')
+    {
+        $requestData = [
+            'email' => $email,
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'phone' => $phone,
+            'address' => $address,
+            // Add other fields as needed
+        ];
+        
+        $hubSpotData = [];
+        
+        foreach ($requestData as $property => $value) {
+            $hubSpotData[] = [
+                'property' => $property,
+                'value' => $value,
+            ];
+        }
+
+        $this->hubSpotService->createContact($hubSpotData);
+
     }
 
     public function PasswordResetCreate()

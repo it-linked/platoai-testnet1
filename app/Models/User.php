@@ -30,6 +30,8 @@ class User extends Authenticatable
         'surname',
         'email',
         'password',
+        'phone',
+        'address',
         'affiliate_id',
         'affiliate_code',
         'remaining_words',

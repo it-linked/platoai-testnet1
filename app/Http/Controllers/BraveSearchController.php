@@ -29,7 +29,7 @@ class BraveSearchController extends Controller
 
     public function search(Request $request)
     {
-        $keyword = $request->keyword;
+        $keyword = urlencode($request->keyword);
         $type=$request->search_type;
         if($request->search_type=='search')
         $type="web";

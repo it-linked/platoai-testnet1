@@ -84,6 +84,8 @@ function RegisterForm() {
 	formData.append( 'name', $( "#name_register" ).val() );
 	formData.append( 'surname', $( "#surname_register" ).val() );
 	formData.append( 'password', $( "#password_register" ).val() );
+	formData.append( 'phone', $( "#phone_register" ).val() );
+	formData.append( 'address', $( "#address_register" ).val() );
 	formData.append( 'password_confirmation', $( "#password_confirmation_register" ).val() );
 	formData.append( 'email', $( "#email_register" ).val() );
 	if ( $( '#affiliate_code' ).val() != 'undefined' ) {

@@ -44,7 +44,7 @@
                     <div class="row">
                         <div class="mx-auto col-lg-6">
                             <h1 class="text-center mb-11">{{ __('Sign in') }}</h1>
-                            @if ($setting->github_active || $setting->twitter_active || $setting->google_active || $setting->facebook_active)
+                            @if ($setting->github_active || $setting->twitter_active || $setting->google_active || $setting->facebook_active || $setting->hubspot_active)
                                 <div class="flex flex-wrap !gap-4 text-[13px] -tracking-[0.15px]]">
                                     @if ($setting->google_active)
                                         <a href="{{ route('login.google') }}"
@@ -106,6 +106,8 @@
                                             {{ __('Login with Facebook') }}
                                         </a>
                                     @endif
+
+                                   
                                 </div>
                                 <div
                                     class="flex items-center gap-8 my-6 !text-black !text-opacity-60 dark:!text-white dark:!text-opacity-60">

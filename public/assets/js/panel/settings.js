@@ -269,6 +269,8 @@ function generalSettingsSave() {
     formData.append( 'facebook_active', $( "#facebook_active" ).is(":checked") ? 1 : 0 );
     formData.append( 'google_active', $( "#google_active" ).is(":checked") ? 1 : 0 );
     formData.append( 'github_active', $( "#github_active" ).is(":checked") ? 1 : 0 );
+    formData.append( 'hubspot_active', $( "#hubspot_active" ).is(":checked") ? 1 : 0 );
+  
 
     formData.append( 'metaTitleLocal', $( "#metaTitleLocal" ).val() );
 	formData.append( 'metaDescLocal', $( "#metaDescLocal" ).val() );
