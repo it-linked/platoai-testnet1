@@ -48,6 +48,22 @@
 						</a>
 					</li>
 					<li class="nav-item">
+						<a class="nav-link" href="{{route('dashboard.external-site','plato-aistream')}}">
+							<span class="nav-link-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M4 4h6v6h-6z"></path>
+									<path d="M14 4h6v6h-6z"></path>
+									<path d="M4 14h6v6h-6z"></path>
+									<path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+								</svg>
+							</span>
+							<span class="flex items-center transition-[opacity,transform] nav-link-title grow">
+							{{__('Plato AiStream')}}
+							</span>
+						</a>
+					</li>
+					
+					<li class="nav-item">
 						<a class="nav-link {{activeRoute('dashboard.search.index')}}" href="{{route('dashboard.search.index')}}">
 							<span class="nav-link-icon">
 								<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -99,19 +115,19 @@
 
 							<!--a class="nav-link {{ route('dashboard.external-site', 'amplifi') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','amplifi')}}">
 								{{__('Amplifi')}}
-							</a-->
+							</a><a class="nav-link {{ route('dashboard.external-site', 'plato-blockchain') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-blockchain')}}">
+								{{__('Plato Blockchain')}}
+							</a>
 
 							<a class="nav-link {{ route('dashboard.external-site', 'plato-ainet') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-ainet')}}">
 								{{__('Plato AiNet')}}
-							</a>
+							</a-->
 
 							<a class="nav-link {{ route('dashboard.external-site', 'plato-aistream') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-aistream')}}">
 								{{__('Plato AiStream')}}
 							</a>
 
-							<a class="nav-link {{ route('dashboard.external-site', 'plato-blockchain') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-blockchain')}}">
-								{{__('Plato Blockchain')}}
-							</a>
+							
 
 							<a class="nav-link {{ route('dashboard.external-site', 'platodata-io') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','platodata-io')}}">
 								{{__('PlatoData IO')}}
@@ -131,26 +147,26 @@
 
 							<!--a class="nav-link {{ route('dashboard.external-site', 'plato-net') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','plato-net')}}">
 								{{__('Plato Net')}}
-							</a-->
+							</a>
 
 							<a class="nav-link {{ route('dashboard.external-site', 'coingenius') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','coingenius')}}">
 								{{__('CoinGenius')}}
 							</a>
 
 							<a class="nav-link {{ route('dashboard.external-site', 'platomusic') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','platomusic')}}">
-							{{__('Music')}}
-							</a>
+								{{__('Music')}}
+							</a-->
 
 							<a class="nav-link {{ route('dashboard.external-site', 'zephyrnet') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.external-site','zephyrnet')}}">
 								{{__('Zephyrnet')}}
 							</a>
 
-							
+
 
 						</div>
 					</li>
 
-					
+
 
 					<li class="nav-item">
 						<a class="nav-link {{activeRoute('dashboard.user.openai.documents.all')}}" href="{{route('dashboard.user.openai.documents.all')}}">
@@ -817,6 +833,11 @@
 		<div class="navbar-nav flex-row justify-end max-lg:basis-[65%]">
 			<div class="flex gap-[18px] max-lg:gap-2">
 				<div class="flex items-center max-xl:gap-2 max-lg:hidden xl:gap-3">
+					@if(Auth::user())
+					<button class="btn" id="connectButton">
+						{{__("Connect Wallet")}}
+					</button>
+					@endif 
 					@if(Auth::user()->type == 'admin')
 					<a class="btn" href="{{route('dashboard.admin.index')}}">
 						<svg class="hidden max-lg:block" xmlns="http://www.w3.org/2000/svg" height="20" fill="currentColor" viewBox="0 96 960 960" width="20">

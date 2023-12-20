@@ -46,7 +46,7 @@
 									@endif
 
 									@if($plan->is_featured == 1)
-										<div class="inline-flex rounded-full py-[0.25rem] px-[0.75rem] bg-gradient-to-r from-[#ece7f7] via-[#e7c5e6] to-[#e7ebf9] text-[11px] text-black">
+										<div class="inline-flex rounded-full py-[0.25rem] px-[0.75rem] bg-gradient-to-r from-[#ece7f7] via-[#e7c5e6] to-[#e7ebf9] text-[11px]">
 											{{__('Popular plan')}}
 										</div>
 									@endif

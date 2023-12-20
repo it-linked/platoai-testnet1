@@ -1,5 +1,5 @@
 @extends('panel.layout.app')
-@section('title', 'AI Chat')
+@section('title', $category->name)
 
 @section('content')
     <div class="page-header">
@@ -16,7 +16,7 @@
                         {{__('Back to dashboard')}}
                     </a>
                     <h2 class="mb-2 page-title">
-                        {{__('AI Chat')}}
+                        {{__($category->name)}} {{__('Agent')}}
                     </h2>
                 </div>
             </div>
