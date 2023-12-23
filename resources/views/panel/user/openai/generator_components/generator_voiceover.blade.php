@@ -95,6 +95,7 @@
                                         <option @if(LaravelLocalization::getCurrentLocale() == "th") {{ 'selected' }} @endif value="th-TH">{{__('Thai (Thailand)')}}</option>
                                         <option @if(LaravelLocalization::getCurrentLocale() == "tr") {{ 'selected' }} @endif value="tr-TR">{{__('Turkish (Turkey)')}}</option>
                                         <option @if(LaravelLocalization::getCurrentLocale() == "uk") {{ 'selected' }} @endif value="uk-UA">{{__('Ukrainian (Ukraine)')}}</option>
+                                        <option @if(LaravelLocalization::getCurrentLocale() == "ur") {{ 'selected' }} @endif value="ur-PK">{{__('Urdu (Pakistan)')}}</option>
                                         <option @if(LaravelLocalization::getCurrentLocale() == "vi") {{ 'selected' }} @endif value="vi-VN">{{__('Vietnamese (Vietnam)')}}</option>
                                     </select>
                                 </div>

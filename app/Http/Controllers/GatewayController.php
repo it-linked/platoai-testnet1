@@ -42,6 +42,8 @@ class GatewayController extends Controller
             "twocheckout",
             "iyzico",
             "paystack",
+            "walletmaxpay",
+            "metamask",
         );
     }
 
@@ -172,30 +174,7 @@ class GatewayController extends Controller
                 "webhook_secret" => 0,
                 "logger" => 0,
             ],
-            // [   "code" => "walletmaxpay",
-            //     "title" => "WalletMaxPay",
-            //     "link" => "https://walletmaxpay.com/",
-            //     "active" => 0,                      
-            //     "available" => 1,                   
-            //     "img" => "/assets/img/payments/walletmaxpay.png",
-            //     "whiteLogo" => 0,                   //if gateway logo is white
-            //     "mode" => 1,                        // Option in settings - Automatically set according to the "Development" mode. "Development" ? sandbox : live (PAYPAL - 1)
-            //     "sandbox_client_id" => 0,           // Option in settings 0-Hidden 1-Visible
-            //     "sandbox_client_secret" => 0,       // Option in settings
-            //     "sandbox_app_id" => 0,              // Option in settings
-            //     "live_client_id" => 1,              // Option in settings
-            //     "live_client_secret" => 1,          // Option in settings
-            //     "live_app_id" => 1,                 // Option in settings
-            //     "currency" => 1,                    // Option in settings
-            //     "currency_locale" => 0,             // Option in settings
-            //     "base_url" => 0,                    // Option in settings
-            //     "sandbox_url" => 0,                 // Option in settings
-            //     "locale" => 0,                      // Option in settings
-            //     "validate_ssl" => 0,                // Option in settings
-            //     "logger" => 0,                      // Option in settings
-            //     "notify_url" => 0,                  // Gateway notification url at our side
-            //     "webhook_secret" => 0,              // Option in settings
-            // ],
+           
             [
                 "code" => "iyzico",
                 "title" => "iyzico",
@@ -221,6 +200,53 @@ class GatewayController extends Controller
                 "webhook_secret" => 0,
                 "logger" => 0,
             ],
+            [   "code" => "walletmaxpay",
+            "title" => "WalletMaxPay",
+            "link" => "https://walletmaxpay.com/",
+            "active" => 0,                      
+            "available" => 1,                   
+            "img" => "/assets/img/payments/walletmaxpay.png",
+            "whiteLogo" => 0,                   //if gateway logo is white
+            "mode" => 1,                        // Option in settings - Automatically set according to the "Development" mode. "Development" ? sandbox : live (PAYPAL - 1)
+            "sandbox_client_id" => 0,           // Option in settings 0-Hidden 1-Visible
+            "sandbox_client_secret" => 0,       // Option in settings
+            "sandbox_app_id" => 0,              // Option in settings
+            "live_client_id" => 1,              // Option in settings
+            "live_client_secret" => 1,          // Option in settings
+            "live_app_id" => 1,                 // Option in settings
+            "currency" => 1,                    // Option in settings
+            "currency_locale" => 0,             // Option in settings
+            "base_url" => 0,                    // Option in settings
+            "sandbox_url" => 0,                 // Option in settings
+            "locale" => 0,                      // Option in settings
+            "validate_ssl" => 0,                // Option in settings
+            "logger" => 0,                      // Option in settings
+            "notify_url" => 0,                  // Gateway notification url at our side
+            "webhook_secret" => 0,              // Option in settings
+        ], [   "code" => "metamask",
+        "title" => "MetaMask",
+        "link" => "https://metamask.io",
+        "active" => 0,                      
+        "available" => 1,                   
+        "img" => "/assets/img/payments/metamask.png",
+        "whiteLogo" => 0,                   //if gateway logo is white
+        "mode" => 1,                        // Option in settings - Automatically set according to the "Development" mode. "Development" ? sandbox : live (PAYPAL - 1)
+        "sandbox_client_id" => 0,           // Option in settings 0-Hidden 1-Visible
+        "sandbox_client_secret" => 0,       // Option in settings
+        "sandbox_app_id" => 0,              // Option in settings
+        "live_client_id" => 1,              // Option in settings
+        "live_client_secret" => 1,          // Option in settings
+        "live_app_id" => 1,                 // Option in settings
+        "currency" => 1,                    // Option in settings
+        "currency_locale" => 0,             // Option in settings
+        "base_url" => 0,                    // Option in settings
+        "sandbox_url" => 0,                 // Option in settings
+        "locale" => 0,                      // Option in settings
+        "validate_ssl" => 0,                // Option in settings
+        "logger" => 0,                      // Option in settings
+        "notify_url" => 0,                  // Gateway notification url at our side
+        "webhook_secret" => 0,              // Option in settings
+    ],
             
         ];
 

@@ -35,6 +35,7 @@ use App\Http\Controllers\Gateways\TwoCheckoutController;
 use App\Http\Controllers\Gateways\WalletmaxpayController;   
 use App\Http\Controllers\Gateways\PaystackController;
 use App\Http\Controllers\Gateways\IyzicoController;   
+use App\Http\Controllers\Gateways\MetamaskController;   
 
 
 /**
@@ -86,6 +87,10 @@ class PaymentController extends Controller
             }
             if($gatewayCode == 'iyzico'){
                 return IyzicoController::subscribe($planId, $plan);
+            }
+
+            if($gatewayCode == 'metamask'){
+                return MetamaskController::subscribe($planId, $plan);
             }
         }
         abort(404);

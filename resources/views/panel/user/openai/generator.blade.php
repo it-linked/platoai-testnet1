@@ -594,6 +594,16 @@
                     {value:"sv-SE-Wavenet-D", label: "Hanna ({{__('Female')}})"},
                     {value:"sv-SE-Wavenet-E", label: "Felix ({{__('Male')}})"}
                 ],
+                "ur-PK": [
+                    {value:"ur-PK-Standard-A", label: "Fatima ({{__('Female')}})"},
+                    {value:"ur-PK-Standard-B", label: "Ahmed ({{__('Male')}})"},
+                    {value:"ur-PK-Standard-C", label: "Mohammed ({{__('Male')}})"},
+                    {value:"ur-PK-Standard-D", label: "Aisha ({{__('Female')}})"},
+                    {value:"ur-PK-Wavenet-A", label: "Layla ({{__('Female')}})"},
+                    {value:"ur-PK-Wavenet-B", label: "Ali ({{__('Male')}})"},
+                    {value:"ur-PK-Wavenet-C", label: "Omar ({{__('Male')}})"},
+                    {value:"ur-PK-Wavenet-D", label: "Zahra ({{__('Female')}})"}
+                ],
                 "ta-IN": [
                     {value:"ta-IN-Standard-A", label: "Anjali ({{__('Female')}})"},
                     {value:"ta-IN-Standard-B", label: "Karthik ({{__('Male')}})"},
