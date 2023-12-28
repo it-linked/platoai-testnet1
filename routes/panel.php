@@ -30,12 +30,14 @@ use Carbon\Carbon;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\EmailTemplatesController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\VerticalController;
 use App\Http\Controllers\Gateways\WalletmaxpayController;
 use App\Http\Controllers\GoogleTTSController;
 use App\Http\Controllers\AdsController;
 use App\Http\Controllers\BraveSearchController;
 use App\Http\Controllers\PlatoAISearchController;
 use App\Http\Controllers\PlatoNetworkController;
+use App\Http\Controllers\PublicationController;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -130,7 +132,13 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 });
 
             });
-
+            
+            // PureTalk AI
+            Route::prefix('puretalk')->name('puretalk.')->group(function () { 
+                Route::get('/ai_puretalk', [UserController::class, 'pureTalk'])->name('speech.show');
+                Route::post('/generate-speech', [UserController::class, 'generatePureTalkSpeech'])->name('generate.speech');
+            });
+            
             // user profile settings
             Route::prefix('settings')->name('settings.')->group(function () {
                 Route::get('/', [UserController::class, 'userSettings'])->name('index');
@@ -195,6 +203,14 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::post('/send-invitation', [UserController::class, 'affiliatesListSendInvitation']);
                 Route::post('/send-request', [UserController::class, 'affiliatesListSendRequest']);
             });
+                            
+                
+            // Verticals
+            Route::prefix('vertical')->name('vertical.')->group(function(){
+                Route::get('{slug}', [VerticalController::class, 'panelVerticalList'])->name('name');
+                Route::get('{name}/{path}', [VerticalController::class, 'panelVerticalSingle'])->name('single');
+            });
+
         });
 
 
@@ -451,14 +467,38 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 })->name('cache.clear');
             });
 
+            // Sitemaps
+            Route::prefix('sitemap')->name('sitemap.')->group(function () {
+                Route::get('/', [AdminController::class, 'sitemaplist'])->name('index');
+                Route::get('/create-or-update/{id?}', [AdminController::class, 'sitemapNewOrEdit'])->name('sitemapNewOrEdit');
+                Route::get('/delete/{id}', [AdminController::class, 'sitemapDelete'])->name('delete');
+                Route::post('/save', [AdminController::class, 'sitemapSave']);
+            });
+
+            // Sitemap Links
+            Route::prefix('sitemap_links')->name('sitemap.links.')->group(function () {
+                Route::get('/', [AdminController::class, 'sitemapLinklist'])->name('index');
+                Route::get('/create-or-update/{id?}', [AdminController::class, 'sitemapLinkNewOrEdit'])->name('sitemapNewOrEdit');
+                Route::get('/delete/{id}', [AdminController::class, 'sitemapLinkDelete'])->name('delete');
+                Route::post('/save', [AdminController::class, 'sitemapLinkSave'])->name('save');
+                Route::post('/bulk-saving', [AdminController::class, 'bulkSaving'])->name('bulkSaving');
+                Route::post('/refresh', [AdminController::class, 'regenerateSitemap'])->name('refresh');
+            });
+
             //Update license type
             Route::prefix('license')->name('license.')->group(function () {
                 Route::get('/', function () {
                     return view('panel.admin.license.index');
                 })->name('index');
             });
+
+            Route::get('/publications/index', [PublicationController::class, 'index'])->name('publications.index');
+            Route::get('/publications/create/{id?}', [PublicationController::class, 'create'])->name('publications.create');
+            Route::get('/publications/delete/{id}', [PublicationController::class, 'delete'])->name('publications.delete');
+            Route::post('/publications/save', [PublicationController::class, 'store']);
         });
 
+        
         //Coupons
         Route::prefix('coupons')->name('coupons.')->group(function () {
             Route::post('/validate-coupon', [AdminController::class, 'couponsValidate'])->name('validate');                
@@ -496,6 +536,36 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
             Route::get('/delete/{id?}', [BlogController::class, 'blogDelete'])->name('delete');
             Route::post('/save', [BlogController::class, 'blogAddOrUpdateSave']);
         });
+        
+        //Vertical
+        Route::prefix('vertical')->name('vertical.')->group(function () {
+            Route::get('/', [VerticalController::class, 'verticalList'])->name('list');
+
+            Route::get('/feed', [VerticalController::class, 'verticalFeed'])->name('feed');
+
+            Route::prefix('crawl')->name('crawl.')->group(function () {
+                Route::get('/', [VerticalController::class, 'verticalCrawlList'])->name('list');
+                Route::post('/scrape', [VerticalController::class, 'verticalCrawlScrape'])->name('scrape');
+                Route::post('/resume', [VerticalController::class, 'verticalCrawlResume'])->name('resume');
+                Route::post('/runagain', [VerticalController::class, 'verticalCrawlRunAgain'])->name('runagain');
+                Route::post('/stop', [VerticalController::class, 'verticalCrawlStop'])->name('stop');
+            });
+
+            Route::prefix('category')->name('category.')->group(function () {
+                Route::get('/', [VerticalController::class, 'verticalCategoryList'])->name('list');
+                Route::get('/add-or-update/{id?}', [VerticalController::class, 'verticalCategoryAddOrUpdate'])->name('addOrUpdate');
+                Route::get('/delete/{id?}', [VerticalController::class, 'verticalCategoryDelete'])->name('delete');
+                Route::post('/save', [VerticalController::class, 'verticalCategoryAddOrUpdateSave']);
+            });
+
+            Route::get('/add-or-update/{id?}', [VerticalController::class, 'verticalAddOrUpdate'])->name('addOrUpdate');
+            Route::get('/delete/{id?}', [VerticalController::class, 'verticalDelete'])->name('delete');
+            Route::post('/save', [VerticalController::class, 'verticalAddOrUpdateSave']);
+        });
+
+        //Publications
+        Route::get('/publications/{slug}', [PublicationController::class, 'viewPublication'])->name("publication.externalSite");
+ 
 
         //Search
         Route::post('/api/search', [SearchController::class, 'search']);

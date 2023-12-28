@@ -21,7 +21,7 @@
 
 		<div class="page-wrapper overflow-hidden">
 			<!-- Updater -->
-            @if($good_for_now OR 1)
+            @if($good_for_now)
 			@yield('content')
             @elseif(!$good_for_now and Route::currentRouteName()!= 'dashboard.admin.settings.general')
                 @include('vendor.installer.magicai_c4st_Act')
@@ -63,6 +63,53 @@
 			</div>
 		</div>
 	</template>
+
+	<script>window.gtranslateSettings = {"default_language":"en","native_language_names":true,"detect_browser_language":true,"wrapper_selector":".language_dropdown","switcher_horizontal_position":"right","switcher_vertical_position":"bottom","float_switcher_open_direction":"bottom","alt_flags":{"en":"usa"}}</script>
+	<script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+
+			var imgElements = document.querySelectorAll('.gt-current-lang img');
+
+			imgElements.forEach(function (img) {
+				// Get the image source from an existing attribute (e.g., 'src')
+				var currentSrc = img.getAttribute('src');
+
+				// Set the 'data-gt-lazy-src' attribute to the existing 'src' value
+				img.setAttribute('data-gt-lazy-src', currentSrc);
+			});
+
+
+			function updateLanguageInURL(selectedLang) {
+				var currentUrl = window.location.href;
+				var domain = window.location.protocol + '//' + window.location.host + '/';
+				var currentLangRegEx = /\/[a-z]{2}(-[a-zA-Z]{2})?($|\/)/i;
+				var isCurrentLanguageInUrl = currentLangRegEx.test(currentUrl);
+				var newUrl = currentUrl.replace(currentLangRegEx, '/');
+				var selectedLangCode = selectedLang.split('-')[0];
+				newUrl = domain + selectedLangCode + '/' + newUrl.split(domain)[1];
+
+				// Update the URL without reloading the page
+				window.history.pushState({ path: newUrl }, '', newUrl);
+			}
+
+			// Function to handle language change
+			function handleLanguageChange(event) {
+				event.preventDefault();
+				var selectedLang = this.getAttribute('data-gt-lang');
+				updateLanguageInURL(selectedLang);
+			}
+			
+			// Get all language links
+			var languageLinks = document.querySelectorAll('.gt_float_switcher a[data-gt-lang]');
+
+			languageLinks.forEach(function (link) {
+				link.addEventListener('click', handleLanguageChange);
+			});
+
+		});
+	</script>
 
 </body>
 </html>

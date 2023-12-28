@@ -13,6 +13,8 @@
 <script src="/assets/openai/js/toastr.min.js"></script>
 <script src="/assets/libs/tom-select/dist/js/tom-select.base.min.js?1674944402" defer></script>
 
+
+
 <script>
     var magicai_localize = {
         signup: @json(__('Sign Up')),

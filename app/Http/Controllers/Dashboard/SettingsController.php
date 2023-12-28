@@ -82,6 +82,7 @@ class SettingsController extends Controller
             $settings->feature_ai_code = $request->feature_ai_code;
             $settings->feature_ai_speech_to_text = $request->feature_ai_speech_to_text;
             $settings->feature_ai_voiceover = $request->feature_ai_voiceover;
+            $settings->feature_ai_puretalk = $request->feature_ai_puretalk;
             $settings->feature_affilates = $request->feature_affilates;
             $settings->feature_ai_article_wizard = $request->feature_ai_article_wizard;
             $settings->hosting_type = $request->hosting_type;

@@ -13,6 +13,7 @@ use App\Models\OpenAIGenerator;
 use App\Models\OpenaiGeneratorFilter;
 use App\Models\PaymentPlans;
 use App\Models\Setting;
+use App\Models\PureTalk;
 use App\Models\Subscriptions as SubscriptionsModel;
 use App\Models\YokassaSubscriptions as YokassaSubscriptionsModel;
 use App\Models\User;
@@ -23,6 +24,7 @@ use App\Models\UserOpenaiChat;
 use App\Models\UserOrder;
 use App\Models\Folders;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -100,6 +102,86 @@ class UserController extends Controller
         }
         return response()->json(compact('html'));
     }
+    
+    public function pureTalk(Request $request)
+    {
+        $pureTalks = PureTalk::paginate(10);
+        return view('panel.user.puretalk.index', compact('pureTalks'));
+    }
+
+    public function generatePureTalkSpeech(Request $request)
+    {
+        $user = Auth::user();
+        $response = Http::withHeaders([
+                'accept' => 'audio/mpeg'
+            ])->post('https://api.puretalk.ai/api/text-to-speech/stream/v1', [
+                'text'   => $request->content,
+                'voice_id' => $request->voice,
+                'voice_model' => 'Puretalk_text_to_speech_v2'
+            ]);
+
+        if ( $response->successful() ) {
+            $fileExtension = getExtensionOfResponse($response);
+            $output = $this->pureTalkAudioOutput($response, $fileExtension, $user);
+
+            // If file is generated then store output entry into database
+            if( isset( $output->getData()->message ) ) {
+                $puretalk = new PureTalk();
+                $puretalk->user_id = $user->id;
+                $puretalk->name = $request->title;
+                $puretalk->text = $request->content;
+                $puretalk->language = $request->language;
+                $puretalk->speaker = $request->voice;
+                $puretalk->voice_path = $output->getData()->file_path;
+                $puretalk->save();
+
+                $pureTalks = PureTalk::where('user_id', $user->id)->paginate();
+
+                $html2 = view('panel.user.puretalk.pure_talk_sidebar_table', compact('pureTalks'))->render();
+
+                return response()->json([
+                    'file' => $output->getData()->file_path,
+                    'message' => 'Audio file is ready to play!',
+                    'html2'  => $html2
+                ]);
+
+            }else{
+                $error = array(
+                    'errors' => 'There was an error generating audio file!',
+                );
+                return response()->json($error, 419);
+            }
+        }
+    }
+
+    public function pureTalkAudioOutput($response, $fileExtension, $user)
+    {
+        $path = 'audio/';
+
+        $file_name = Str::random(4) . '-' . Str::slug($user->fullName()) . '-audio.' . $fileExtension;
+
+        //Audio Extension Control
+        $audioTypes = ['mp3', 'mp4', 'mpeg', 'mpga', 'm4a', 'wav', 'webm'];
+        if (!in_array(Str::lower( $fileExtension ), $audioTypes)) {
+            $data = array(
+                'errors' => ['Invalid extension, accepted extensions are mp3, mp4, mpeg, mpga, m4a, wav, and webm.'],
+            );
+            return response()->json($data, 419);
+        }
+
+        $fileContent = $response->getBody()->getContents();
+        \Storage::disk('upload')->put( $path . $file_name , $fileContent);
+
+
+        $response = [
+            'file_name' => $file_name,
+            'file_path' => asset('upload/' . $path . $file_name),
+            'message' => 'Audio file is ready to play!'
+        ];
+
+        return response()->json($response);
+    }
+
 
     public function openAIGenerator($slug)
     {

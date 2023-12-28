@@ -33,7 +33,9 @@
             <div class="col-sm-8 col-lg-8">
                 @include('panel.user.payment.coupon.index')
 
-                <div id="paypal-button-container"></div>
+                <div id="paypal-button-container">
+                    <button class="btn btn-primary" id="pay_with_metamask">Pay with Metamask</button>
+                </div>
                 <p class="mt-3">{{__('By purchase you confirm our')}} <a href="{{ url('/').'/terms' }}">{{__('Terms and Conditions')}}</a> </p>
                
             </div>
@@ -133,5 +135,47 @@
         @endif
     </div>
 </div>
+@endsection
+@section("script")
+<script>
+    document.getElementById('payWithMetaMask').addEventListener('click', async () => {
+    // Call a JavaScript function to initiate MetaMask payment flow
+    await initiateMetaMaskPayment();
+});
+       
+// Add this JavaScript function to your script
+async function initiateMetaMaskPayment() {
+    // Ensure MetaMask is installed
+    if (typeof window.ethereum === 'undefined') {
+        alert('Please install MetaMask to make payments.');
+        return;
+    }
+
+    // Request user to connect their MetaMask wallet
+    await window.ethereum.enable();
+
+    // Get the selected account
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const userAccount = accounts[0];
+
+    // Trigger a backend endpoint to handle the payment and subscription activation
+    const response = await fetch('/handle-metamask-payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userAccount }),
+    });
+
+    const result = await response.json();
+    if (result.status === 'success') {
+        alert('Payment successful!');
+        // Perform any additional actions on successful payment
+    } else {
+        alert('Payment failed. Please try again.');
+    }
+}
+
+    </script>
 @endsection
 

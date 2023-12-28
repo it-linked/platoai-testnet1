@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\OpenAIGenerator;
 use App\Models\OpenaiGeneratorChatCategory;
 use App\Models\UserOpenai;
+use App\Models\VerticalCategory;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -18,6 +19,7 @@ class SearchController extends Controller
             $template_search = [];
             $workbook_search = [];
             $ai_chat_search = [];
+            $verical_search = [];
         }else {
             $template_search = OpenAIGenerator::where('title', 'like', "%$word%")->get();
 
@@ -25,11 +27,13 @@ class SearchController extends Controller
 
             $ai_chat_search = OpenaiGeneratorChatCategory::where('name', 'like', "%$word%")->orWhere('description', 'like', "%$word%")->get();
 
-            if (count($template_search)==0 and count($workbook_search)==0 and count($ai_chat_search)==0){
+            $verical_search = VerticalCategory::where('name', 'like', "%$word%")->orWhere('slug', 'like', "%$word%")->get();
+
+            if (count($template_search)==0 and count($workbook_search)==0 and count($ai_chat_search)==0  and count($verical_search) == 0){
                 $result = 'null';
             }
         }
-        $html = view('panel.layout.components.search_results', compact('template_search', 'workbook_search', 'ai_chat_search', 'result'))->render();
+        $html = view('panel.layout.components.search_results', compact('template_search', 'workbook_search', 'ai_chat_search', 'verical_search', 'result'))->render();
         return response()->json(compact('html'));
     }
 }

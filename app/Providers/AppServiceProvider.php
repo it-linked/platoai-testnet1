@@ -9,6 +9,7 @@ use App\Models\OpenaiGeneratorFilter;
 use App\Models\Setting;
 use App\Models\SettingTwo;
 use App\Models\UserOpenai;
+use App\Models\Publication;
 use App\Services\MemoryLimit;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Artisan;
@@ -23,6 +24,7 @@ use Spatie\Health\Facades\Health;
 use Spatie\Health\Checks\Checks\DebugModeCheck;
 use Spatie\Health\Checks\Checks\EnvironmentCheck;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
+
 // use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
 
 class AppServiceProvider extends ServiceProvider
@@ -84,6 +86,11 @@ class AppServiceProvider extends ServiceProvider
                 }
                 $aiWriters = OpenAIGenerator::orderBy('title', 'asc')->where('active', 1)->get();
                 View::share('aiWriters', $aiWriters);
+
+                $publications = Publication::orderBy('title','asc')->get();
+                View::share('publications', $publications);
+
+
 
 
                 $voiceoverCheck = OpenAIGenerator::where('slug', 'ai_voiceover')->first();

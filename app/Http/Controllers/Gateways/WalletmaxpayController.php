@@ -82,7 +82,7 @@ class WalletmaxpayController extends Controller
         $uuid = Session::get('payment_uuid_'.auth()->id());
         $planId = Session::get('plan_id_'.auth()->id());
         if($uuid != $request->token || !$planId) {
-            return redirect()->route('dashboard.'.auth()->user()->type.'.index')->with(['message' => 'Invalid request', 'type' => 'error']);
+            return redirect()->route('dashboard.index')->with(['message' => 'Invalid request', 'type' => 'error']);
         }
 
         $plan = PaymentPlans::findOrFail(Session::get('plan_id_'.auth()->id()));
@@ -111,6 +111,6 @@ class WalletmaxpayController extends Controller
 
         createActivity($user->id, __('Purchased'), $plan->name . ' '. __('Token Pack'), null);
 
-        return redirect()->route('dashboard.'.auth()->user()->type.'.index')->with(['message' => 'Thank you for your purchase. Enjoy your remaining words and images.', 'type' => 'success']);
+        return redirect()->route('dashboard.index')->with(['message' => 'Thank you for your purchase. Enjoy your remaining words and images.', 'type' => 'success']);
     }
 }

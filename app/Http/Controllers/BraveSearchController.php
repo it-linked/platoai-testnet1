@@ -62,8 +62,11 @@ class BraveSearchController extends Controller
 
 
         curl_close($ch);
-
-       
+        if(isset($_REQUEST['test'])){
+            echo json_encode($apiResponse);
+            exit();
+        }
+      
         if($type=="images"){
             return view("panel.search.images",compact('apiResponse'));
         }
@@ -79,7 +82,7 @@ class BraveSearchController extends Controller
         else {
             echo LaravelLocalization::setLocale();
         }
-        echo json_encode($apiResponse);
+        
     }
     /**
      * Store a newly created resource in storage.

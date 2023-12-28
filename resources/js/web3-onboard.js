@@ -6,7 +6,7 @@ import coinbaseModule from '@web3-onboard/coinbase';
 import trezorModule from '@web3-onboard/trezor';
 import magicModule from '@web3-onboard/magic';
 import mewWallet from '@web3-onboard/mew-wallet';
-import safeModule from '@web3-onboard/gnosis'; // Add this line
+import safeModule from '@web3-onboard/gnosis'
 
 import { Buffer } from 'buffer';
 import { ethers } from 'ethers';
@@ -24,9 +24,11 @@ const magic = magicModule({
   userEmail: localStorage.getItem('magicUserEmail'),
 });
 const mewWalletModule = mewWallet();
+
 const trezor = trezorModule({ email: 'hkhan.swa@gmail.com', appUrl: 'https://testnet.platodata.io' });
 const safe = safeModule(); // Add this line
 
+// const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
 
 const appMetadata = {
   name: 'PlatoAI Wallet Connect',
@@ -35,7 +37,8 @@ const appMetadata = {
   description: 'PlatoAI using Onboard',
   recommendedInjectedWallets: [
     { name: 'Coinbase', url: 'https://wallet.coinbase.com/' },
-    { name: 'MetaMask', url: 'https://metamask.io' }
+    { name: 'MetaMask', url: 'https://metamask.io' },
+    { name: 'Safe', url: 'https://safe.global/' }
   ]
 } 
 const onboard = Onboard({
@@ -168,25 +171,89 @@ const customTheme  ={
  "--w3o-font-family": "unset", 
  }
 onboard.state.actions.updateTheme(customTheme)
-
+let wallets = null;
 async function connectWalletAndSendTransaction() {
-  const wallets = await onboard.connectWallet();
-
-
-  if (wallets[0] && wallets[0].provider) {
-    const provider = new ethers.providers.Web3Provider(wallets[0].provider);
-    const signer = provider.getSigner();
-
-    
-  }
   try {
-  const { email, publicAddress } = await magicWallet.instance.user.getMetadata()
-  localStorage.setItem('magicUserEmail', email)
-  // This email can then be passed through the MagicInitOptions to continue the users session and avoid having to login again
-} catch {
-  // Handle errors if required!
+     wallets = await onboard.connectWallet();
+     console.log(wallets);
+    if (wallets.length > 0 && wallets[0].provider) {
+     
+
+      // Check if the user property is defined before accessing its properties
+      if (wallets[0].instance && wallets[0].instance.user) {
+        try {
+          const { email, publicAddress } = await wallets[0].instance.user.getMetadata();
+          localStorage.setItem('magicUserEmail', email)
+
+          // Continue with the rest of your code...
+        } catch (userError) {
+          console.error("Error retrieving user metadata:", userError);
+        }
+      } else {
+        console.error("User property is not defined.");
+      }
+    } else {
+      console.error("No wallet selected or provider not available.");
+    }
+  } catch (error) {
+    console.error("Error connecting wallet:", error);
+  }
 }
-}
+
+// let accounts = [];
+// const paywithmetamask = document.getElementById("pay_with_metamask");
+// paywithmetamask.addEventListener("click",async ()=>{
+  
+//   try {
+
+//   //  const wallets = onboard.injectedModule.providers
+//     if (wallets.length > 0 && wallets[0].provider) {
+//       const provider = new ethers.providers.Web3Provider(wallets[0].provider);
+//       const signer = provider.getSigner()
+
+//   // send a transaction with the ethers provider
+//       const valueInEther = '0.00001';
+//       const valueInWei = ethers.utils.parseUnits(valueInEther, 'ether');
+//       const valueHex =  valueInWei.toHexString();
+//       const txn = await signer.sendTransaction({
+//         to: '0x3fa62efb0a2aea36d6ef6524392db57ba359e270',
+//         value: valueHex
+//       })
+
+//     } else {
+//       console.error("No wallet selected or provider not available.");
+//     }
+//   } catch (error) {
+//     console.error("Error connecting wallet:", error);
+//   }
+// })
+// paywithmetamask.addEventListener("abc", async function () {
+
+//   try {
+//     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+
+//     const valueInEther = '0.00001';
+//     const valueInWei = ethers.utils.parseUnits(valueInEther, 'ether');
+//     const valueHex =  valueInWei.toHexString();
+//     const transactionParameters = {
+//       from: accounts[0],
+//       to: '0x3fa62efb0a2aea36d6ef6524392db57ba359e270',
+//       value: valueHex,
+//       gasLimit: '0x5028',
+//       maxPriorityFeePerGas: '0x3b9aca00',
+//       maxFeePerGas: '0x2540be400',
+//     };
+
+//     const txHash = await ethereum.request({
+//       method: 'eth_sendTransaction',
+//       params: [transactionParameters],
+//     });
+
+//     console.log('Transaction Hash:', txHash);
+//   } catch (error) {
+//     console.error('Error sending transaction:', error);
+//   }
+// });
 
 
 const connectButton = document.getElementById('connectButton'); // Replace 'connectButton' with your actual button ID

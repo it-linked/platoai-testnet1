@@ -23,6 +23,9 @@ use App\Models\OpenaiGeneratorChatCategory;
 use App\Models\OpenaiGeneratorFilter;
 use App\Models\PaymentPlans;
 use App\Models\Setting;
+use App\Models\Sitemap;
+use App\Models\SitemapPages;
+use App\Events\SitemapGenerate;
 use App\Models\Testimonials;
 use App\Models\HowitWorks;
 use App\Models\User;
@@ -1305,5 +1308,200 @@ class AdminController extends Controller
         $item = FrontendGenerators::where('id', $id)->firstOrFail();
         $item->delete();
         return back()->with(['message' => 'Item deleted succesfully', 'type' => 'success']);
+    }
+
+    
+    public function sitemaplist(){
+        $sitemapList = Sitemap::orderBy('group_by', 'ASC')->get();
+        return view('panel.admin.sitemaps.general.index', compact('sitemapList'));
+    }
+    
+    public function sitemapNewOrEdit($id = null){
+        if ($id == null){
+            return view('panel.admin.sitemaps.general.sitemapNewOrEdit');
+        }else{
+            $sitemap = Sitemap::where('id', $id)->first();
+            return view('panel.admin.sitemaps.general.sitemapNewOrEdit', compact('sitemap'));
+        }
+    }
+    
+    public function sitemapDelete($id){
+        $item = Sitemap::where('id', $id)->firstOrFail();
+        $item->delete();
+        return back()->with(['message' => 'Item deleted succesfully', 'type' => 'success']);
+    }
+    
+    
+    public function sitemapSave(Request $request){
+        if ($request->sitemap_id != 'undefined'){
+            $item = Sitemap::where('id', $request->sitemap_id)->firstOrFail();
+        }else{
+            $item = new Sitemap();
+        }
+        $item->file_name = str_replace(' ', '-', strtolower( $request->file_name ) );
+        $item->group_by = strtolower( $request->group_by );
+        $item->save();
+    }
+    
+    public function sitemapLinklist( Request $request ){
+        $groupBy = Sitemap::orderBy('group_by', 'ASC')->pluck('group_by', 'id');
+
+        $paths = [
+            [
+                'name' => 'AI',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'artificial-intelligence' ])
+            ],
+            [
+                'name' => 'AR/VR',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'ar-vr' ])
+            ],
+            [
+                'name' => 'Big Data',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'big-data' ])
+            ],
+            [
+                'name' => 'Blockchain',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'blockchain' ])
+            ],
+            [
+                'name' => 'Carbon',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'carbon' ])
+            ],
+            [
+                'name' => 'Cleantech',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'cleantech' ])
+            ],
+            [
+                'name' => 'Code',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'code' ])
+            ],
+            [
+                'name' => 'Crowdfunding',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'crowdfunding' ])
+            ],
+            [
+                'name' => 'Cyber Security',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'cyber-securitye' ])
+            ],
+            [
+                'name' => 'Esports',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'esports' ])
+            ],
+            [
+                'name' => 'Gaming',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'gaming' ])
+            ],
+            [
+                'name' => 'NFTs',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'nfts' ])
+            ],
+            [
+                'name' => 'Payments',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'payments' ])
+            ],
+            [
+                'name' => 'Quantum',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'quantum' ])
+            ],
+            [
+                'name' => 'SEO',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'seo' ])
+            ],
+            [
+                'name' => 'Startups',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'startups' ])
+            ],
+            [
+                'name' => 'Trading',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'trading' ])
+            ],
+            [
+                'name' => 'Venture Capital',
+                'path' => route('dashboard.vertical.feed', [ 'slug' => 'venture-capital' ])
+            ]
+        ];
+
+        // Get the group_by value from the request, if present
+        $selectedGroupBy = $request->input('group_by');
+
+         // Query SitemapPages with optional filtering by group_by
+        $query = SitemapPages::query();
+
+        if ($selectedGroupBy) {
+            // Assuming 'group_by' is a column in the Sitemap table
+            $query->whereHas('sitemap', function ($q) use ($selectedGroupBy) {
+                $q->where('group_by', $selectedGroupBy);
+            });
+        }
+
+        // Paginate the results
+        $resultsPerPage = 10; // You can set the number of results per page
+        $sitemapLinks = $query->paginate($resultsPerPage);
+
+        return view('panel.admin.sitemaps.links.index', compact('groupBy', 'sitemapLinks', 'paths'));
+    }
+    
+    public function sitemapLinkNewOrEdit($id = null){
+        if ($id == null){
+            return view('panel.admin.sitemaps.links.sitemapNewOrEdit');
+        }else{
+            $sitemap = Sitemap::where('id', $id)->first();
+            return view('panel.admin.sitemaps.links.sitemapNewOrEdit', compact('sitemap'));
+        }
+    }
+    
+    public function sitemapLinkDelete($id){
+        $item = SitemapPages::where('id', $id)->firstOrFail();
+        $item->delete();
+        return back()->with(['message' => 'Item deleted succesfully', 'type' => 'success']);
+    }
+    
+    
+    public function sitemapLinkSave(Request $request){
+        if ($request->sitemap_id != 'undefined'){
+            $item = SitemapPages::where('id', $request->sitemap_id)->firstOrFail();
+        }else{
+            $item = new SitemapPages();
+        }
+        $item->sitemap_id = $request->group_by;
+        $item->url = $request->url;
+        $item->frequency = $request->frequency;
+        $item->priority = $request->priority;
+        $item->save();
+
+        // Dispatching and event for updating sitemaps in file
+        event(new SitemapGenerate());
+
+        return response()->json(['message' => __('Sitemap link updated successfully')]);
+    }
+
+    public function bulkSaving( Request $request ) {
+        $urls = json_decode($request->url, true); // Convert JSON to associative array
+        $now = now(); // Get current timestamp
+        
+        foreach ($urls as $url) {
+            SitemapPages::updateOrCreate(
+                ['url' => $url],
+                [
+                    'sitemap_id' => $request->group_by,
+                    'frequency' => $request->frequency,
+                    'priority' => $request->priority,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+        }
+
+        // After bulk insertion update the sitemap actual file, by dispatching events
+        event(new SitemapGenerate());
+
+        return response()->json(['message' => __('Bulk Sitemap link updated successfully')]);
+    }
+
+    public function regenerateSitemap( Request $request ){
+        // After bulk insertion update the sitemap actual file, by dispatching events
+        event(new SitemapGenerate());
+
+        return response()->json(['message' => __('Sitemap regenerated successfully')]);
     }
 }
