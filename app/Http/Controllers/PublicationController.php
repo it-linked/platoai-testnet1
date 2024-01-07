@@ -15,13 +15,29 @@ class PublicationController extends Controller
         return view('panel.publication.index', compact('publication'));
 
     }
-    public function index(){
-        $publicationList = Publication::all();
-        foreach($publicationList as $publication){
-            $slug = Str::slug($publication->title);
-            $publication->slug = $slug;
-            $publication->save();
+    public function updateStatus($id){
+        $publication = Publication::find($id);
+    
+        // Toggle the status (switch between 0 and 1)
+        $publication->status = !$publication->status;
+        $publication->save();
+        // Determine the message based on the current state
+        $message = $publication->status ? 'Publication enabled successfully!' : 'Publication disabled successfully!';
+
+        // Redirect with the appropriate success message
+        return back()->with(['message' => $message, 'type' => 'success']);    
+    }
+    public function index(Request $request) {
+        $query = Publication::orderBy('title', 'asc');
+    
+        // Check if there is a search query
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('title', 'like', "%$search%");
         }
+    
+        $publicationList = $query->paginate(20);
+    
         return view('panel.admin.publications.index', compact('publicationList'));
     }
     public function create($id=null)

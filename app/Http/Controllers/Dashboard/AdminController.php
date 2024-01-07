@@ -1340,6 +1340,8 @@ class AdminController extends Controller
         }
         $item->file_name = str_replace(' ', '-', strtolower( $request->file_name ) );
         $item->group_by = strtolower( $request->group_by );
+        $item->frequency = $request->frequency ?? 'daily';
+        $item->priority = $request->priority ?? 0.9;
         $item->save();
     }
     

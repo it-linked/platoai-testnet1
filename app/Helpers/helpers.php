@@ -16,7 +16,8 @@ use App\Models\SettingTwo;
 use App\Models\PrivacyTerms;
 use App\Models\UserCategory;
 use Illuminate\Support\Facades\Log;
-
+use Jenssegers\Agent\Agent;
+use GuzzleHttp\Client;
 
 function activeRoute($route_name){
     if (Route::currentRouteName() == $route_name){
@@ -721,4 +722,233 @@ function getMetaDesc($setting){
     }
 
     return  $desc;
+}
+
+function getExtensionOfResponse( $response ){
+    $contentTypeHeader = $response->getHeader('content-type');
+    $fileExtension = Str::afterLast($contentTypeHeader[0], '/');
+    return $fileExtension;
+}
+
+function getAvailableLanguages(){
+    $settings_two = \App\Models\SettingTwo::first();
+    $supportLanguages = LaravelLocalization::getSupportedLocales();
+    $available_language = [];
+    foreach( $supportLanguages as $localeCode => $properties ){
+        if(in_array( $localeCode, explode(',', $settings_two->languages) )){
+            $available_language[] = [
+                'name' => $properties['name'],
+                'regional_code' => explode( "_", $properties['regional'] )[0]
+            ];
+        }
+    }
+    return $available_language;
+}
+
+function getLocalizedUrl( $url, $lang )
+{
+    $urlPath = parse_url($url, PHP_URL_PATH);
+
+    $localizedPath = url ( $lang .  $urlPath );
+
+    return $localizedPath;
+
+}
+
+function getUrlPart( $url, $index )
+{
+    $urlParts = explode('/', $url);
+    $urlParts = array_filter($urlParts);
+    return $urlParts[count($urlParts) - $index];
+}
+
+
+function formatCount($count) {
+    if ($count >= 1000 && $count < 1000000) {
+        return round($count / 1000) . 'k';
+    } elseif ($count >= 1000000) {
+        return round($count / 1000000) . 'M';
+    }
+    return $count;
+}
+
+function is_desktop()
+{
+    $agent = new Agent();
+    return $agent->isDesktop();
+}
+
+function is_mobile()
+{
+    $agent = new Agent();
+    return !$agent->isDesktop();
+}
+
+function theme_url( $mode )
+{
+    $urlParts = parse_url( request()->fullUrl() );
+    isset($urlParts['query']) ? parse_str($urlParts['query'], $queryParams) : '';
+    if ( isset($queryParams['theme']) ) {
+        unset($queryParams['theme']);
+    
+        $newQuery = http_build_query($queryParams);
+        $newUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'];
+        
+
+        if ($newQuery !== '') {
+            $newUrl .= '?' . $newQuery . '&theme=' . $mode;
+        }else{
+            $newUrl .= '?theme=' . $mode;
+        }
+    
+        return $newUrl;
+
+    } else {
+        $queryPart = empty( request()->query() ) ? '?theme=' : '&theme=';
+        return request()->fullUrl() . $queryPart . $mode;
+    }
+
+}
+
+
+function percentageRating( $ratingValue, $bestRating ){
+    $percentage = ($ratingValue / $bestRating) * 100;
+    return number_format($percentage, 2);
+}
+
+function removePTagsWithSpecificChildren($html) {
+    $doc = new \DOMDocument();
+    // Load HTML content
+    @$doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+
+    $xpath = new \DOMXPath($doc);
+
+    // Find all <p> tags
+    $paragraphs = $xpath->query('//p');
+
+    foreach ($paragraphs as $p) {
+        $hasImageOrHeaderOrList = false;
+
+        // Check if <p> contains <img>, <h1>, or <ul>
+        foreach ($p->childNodes as $child) {
+            if ($child->nodeName === 'img' || $child->nodeName === 'h1' || $child->nodeName === 'ul') {
+                $hasImageOrHeaderOrList = true;
+                break;
+            }
+        }
+
+        // Remove <p> if it contains <img>, <h1>, or <ul>
+        if ($hasImageOrHeaderOrList) {
+            while ($p->firstChild) {
+                $p->parentNode->insertBefore($p->firstChild, $p);
+            }
+            $p->parentNode->removeChild($p);
+        }
+    }
+
+    // Get the updated HTML content
+    $updatedHtml = $doc->saveHTML();
+
+    // Remove doctype, <html>, and <body> tags from the string
+    $updatedHtml = preg_replace(array('~<!DOCTYPE[^>]*>~', '~<html[^>]*>~', '~</html>~', '~<body[^>]*>~', '~</body>~'), '', $updatedHtml);
+
+    return $updatedHtml;
+}
+
+function extractImagesFromDescription($items)
+{
+    $images = [];
+
+    $description = $items ?? '';
+
+    // Wrap the content in a basic HTML structure
+    $contentWithHtml = '<!DOCTYPE html><html><body>' . $description . '</body></html>';
+
+    // Create a new DOMDocument
+    $doc = new \DOMDocument();
+
+    // Load the HTML content
+    @$doc->loadHTML(mb_convert_encoding($contentWithHtml, 'HTML-ENTITIES', 'UTF-8'));
+
+    // Get all img tags from the content
+    $imgTags = $doc->getElementsByTagName('img');
+
+    // Extract src attribute of each img tag
+    foreach ($imgTags as $imgTag) {
+        $images[] = $imgTag->getAttribute('src');
+    }
+
+    return $images;
+    
+}
+
+function downloadImage($urls)
+{
+    $url_path = [];
+    foreach ($urls as $key => $url) {
+        $path = 'upload/images/vertical/';
+        $client = new Client();
+        try {
+            $response = $client->get($url);
+            $contentType = explode('/', $response->getHeader('Content-Type')[0])[1];
+            $imageTypes = ['jpg', 'jpeg', 'png', 'svg', 'webp']; // Allowed image types
+
+            if (!in_array($contentType, $imageTypes)) {
+                $data = array(
+                    'errors' => ['The file extension must be jpg, jpeg, png, webp, or svg.'],
+                );
+                return response()->json($data, 419);
+            }
+
+            $image_name = basename(parse_url($url, PHP_URL_PATH));
+
+            file_put_contents( public_path($path . $image_name) , $response->getBody() );
+
+            $img_path = $path . $image_name;
+            array_push($url_path, $img_path);
+
+        } catch (\Exception $e) {
+            // Handle any exceptions if the image couldn't be fetched or saved
+            report($e);
+        }
+    }
+
+    return $url_path;
+}
+
+function getLastSegemntFromUrl($link)
+{
+    $parsedUrl = parse_url( rtrim($link, '/') );
+    if (isset($parsedUrl['path'])) {
+        // Get the path segment
+        $pathSegments = explode('/', $parsedUrl['path']);
+        // Extract the last segment (slug)
+        $lastSegment = end($pathSegments);
+    
+        return $lastSegment;
+    }
+}
+
+function removeImgTags($html) {
+    $doc = new \DOMDocument();
+    // Load HTML content
+    @$doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+
+    $xpath = new \DOMXPath($doc);
+
+    // Find all <img> tags
+    $images = $xpath->query('//img');
+
+    foreach ($images as $img) {
+        // Remove the <img> tag
+        $img->parentNode->removeChild($img);
+    }
+
+    // Get the updated HTML content
+    $updatedHtml = $doc->saveHTML();
+
+    // Remove doctype, <html>, and <body> tags from the string
+    $updatedHtml = preg_replace(array('~<!DOCTYPE[^>]*>~', '~<html[^>]*>~', '~</html>~', '~<body[^>]*>~', '~</body>~'), '', $updatedHtml);
+
+    return $updatedHtml;
 }

@@ -10,37 +10,62 @@ class BraveSearchController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($slug = "search")
+    public function index(Request $request)
     {
-        return view('panel.search.index',compact("slug"));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Brave search function. Call brave search API
-     */
-
-    public function search(Request $request)
-    {
-        $keyword = urlencode($request->keyword);
-        $type=$request->search_type;
-        if($request->search_type=='search')
-        $type="web";
-        $url = "https://api.search.brave.com/res/v1/".$type."/search?q=$keyword";
-    
-        if($request->page>1){
-            $url.="&offset=".$request->page;
+        if( $request->q )
+        {
+            $brave_result = $this->sent_brave_request( $request, "web" );
+            // dd( $brave_result );
+            $results = $brave_result;
+            return view("panel.search.web",compact('results'));
+        }else{
+            return view('panel.search.index');
         }
-        $api_key = "BSA2vpxtyu7FoVwRLWYgo0o1xUOia0X";
-       
+    }
 
+    /**
+     * Display Image Search results
+     */
+    public function imageSearch(Request $request)
+    {
+        $brave_result = $this->sent_brave_request( $request, "images" );
+        $results = $brave_result ?? [];
+        return view("panel.search.images",compact('results'));
+    }
+
+    /**
+     * Display Video Search results
+     */
+    public function videoSearch(Request $request)
+    {
+        $brave_result = $this->sent_brave_request( $request, "videos" );
+        $results = $brave_result ?? [];
+        return view("panel.search.videos",compact('results'));
+    }
+    
+    /**
+     * Display News Search results
+     */
+    public function newsSearch(Request $request)
+    {
+        $brave_result = $this->sent_brave_request( $request, "news" );
+        // dd( $brave_result );
+        $results = $brave_result ?? [];
+        return view("panel.search.news",compact('results'));
+    }
+
+    private function sent_brave_request( $request, $type )
+    {
+        $keyword = $request->q;
+        $offset = $request->offset;
+        $url = "https://api.search.brave.com/res/v1/".$type."/search?q=". str_replace( "+", "%20", urlencode($keyword) );
+
+        if( $offset )
+        {
+            $url .= "&offset=". $offset;
+        }
+        
+        $api_key = "BSA2vpxtyu7FoVwRLWYgo0o1xUOia0X";
         $headers = [
             "Accept: application/json",
             "Accept-Encoding: gzip",
@@ -60,67 +85,13 @@ class BraveSearchController extends Controller
             echo 'Curl error: ' . curl_error($ch);
         }
 
-
         curl_close($ch);
-        if(isset($_REQUEST['test'])){
-            echo json_encode($apiResponse);
-            exit();
-        }
-      
-        if($type=="images"){
-            return view("panel.search.images",compact('apiResponse'));
-        }
-        else if($type=="web"){
-            $apiResponse = $apiResponse['web'];
-            return view("panel.search.web",compact('apiResponse'));
-        }
-        else if($type=="videos"){
-           
-            return view("panel.search.videos",compact('apiResponse'));
 
-        }
-        else {
-            echo LaravelLocalization::setLocale();
-        }
-        
-    }
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        return $apiResponse;
     }
 
     /**
-     * Display the specified resource.
+     * Brave search function. Call brave search API
      */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+   
 }

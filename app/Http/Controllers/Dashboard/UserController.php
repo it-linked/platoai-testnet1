@@ -7,6 +7,8 @@ use App\Http\Controllers\GatewayController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Gateways\PaypalController;
 use App\Jobs\SendInviteEmail;
+use App\Models\Vertical;
+use App\Models\VerticalCategory;
 use App\Models\Activity;
 use App\Models\Gateways;
 use App\Models\OpenAIGenerator;
@@ -531,5 +533,29 @@ class UserController extends Controller
         } else {
             return response()->json(['error' => 'ERROR'], 411);
         }
+    }
+
+        
+    public function panelVerticalList(Request $request){
+
+        $verticalCategory = VerticalCategory::where('slug', $request->slug)->firstOrFail();
+        $verticals = Vertical::where('category_id', $verticalCategory->id )->paginate(10);
+
+        if ($verticals->isEmpty()) {
+           abort(404);
+        }
+
+        if( $request->ajax() )
+        {
+            return response()->json( [ 'data' => $verticals, 'verticalCategory' => $verticalCategory ], 200 );
+        }
+        return view('panel.vertical.content', [ 'data' => $verticals, 'verticalCategory' => $verticalCategory ]);
+
+    }
+
+    public function panelVerticalSingle(Request $request){
+        $vertical = Vertical::where('slug', $request->path )->with('category')->firstOrFail();
+        $relatedVertical = Vertical::orderBy('updated_at', "DESC")->where('id', '!=', $vertical->id)->where('category_id', $vertical->category->id )->limit(4)->get(['id', 'title', 'slug', 'updated_at']);
+        return view( 'panel.vertical.single', [ 'vertical' => $vertical, 'relatedVertical' => $relatedVertical ] );
     }
 }

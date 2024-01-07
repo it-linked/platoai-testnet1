@@ -87,7 +87,7 @@ class AppServiceProvider extends ServiceProvider
                 $aiWriters = OpenAIGenerator::orderBy('title', 'asc')->where('active', 1)->get();
                 View::share('aiWriters', $aiWriters);
 
-                $publications = Publication::orderBy('title','asc')->get();
+                $publications = Publication::where("status",1)->orderBy('title','asc')->get();
                 View::share('publications', $publications);
 
 

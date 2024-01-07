@@ -7,6 +7,8 @@ use App\Models\OpenAIGenerator;
 use App\Models\OpenaiGeneratorChatCategory;
 use App\Models\UserOpenai;
 use App\Models\VerticalCategory;
+use App\Models\Blog;
+use App\Models\Publication;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -20,6 +22,7 @@ class SearchController extends Controller
             $workbook_search = [];
             $ai_chat_search = [];
             $verical_search = [];
+            $blog_search = [];
         }else {
             $template_search = OpenAIGenerator::where('title', 'like', "%$word%")->get();
 
@@ -29,11 +32,15 @@ class SearchController extends Controller
 
             $verical_search = VerticalCategory::where('name', 'like', "%$word%")->orWhere('slug', 'like', "%$word%")->get();
 
-            if (count($template_search)==0 and count($workbook_search)==0 and count($ai_chat_search)==0  and count($verical_search) == 0){
+            $blog_search = Blog::where('title', 'like', "%$word%")->orWhere('content', 'like', "%$word%")->get();
+
+            $publication_search = Publication::where('title', 'like', "%$word%")->Where('status', '=', "1")->get();
+
+            if (count($template_search)==0 and count($workbook_search)==0 and count($ai_chat_search)==0 and count($verical_search) == 0 and count($blog_search) == 0 and count($publication_search) == 0 ){
                 $result = 'null';
             }
         }
-        $html = view('panel.layout.components.search_results', compact('template_search', 'workbook_search', 'ai_chat_search', 'verical_search', 'result'))->render();
+        $html = view('panel.layout.components.search_results', compact('template_search', 'workbook_search', 'ai_chat_search', 'verical_search', 'blog_search', 'publication_search', 'result'))->render();
         return response()->json(compact('html'));
     }
 }

@@ -38,6 +38,7 @@ use App\Http\Controllers\BraveSearchController;
 use App\Http\Controllers\PlatoAISearchController;
 use App\Http\Controllers\PlatoNetworkController;
 use App\Http\Controllers\PublicationController;
+use App\Http\Controllers\ZeusAIController;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -138,6 +139,16 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::get('/ai_puretalk', [UserController::class, 'pureTalk'])->name('speech.show');
                 Route::post('/generate-speech', [UserController::class, 'generatePureTalkSpeech'])->name('generate.speech');
             });
+
+             // Zeus AI
+             Route::prefix('zeusai')->name('zeusai.')->group(function () { 
+                Route::get('/chat/{id?}', [ZeusAIController::class, 'index'])->name('chat');
+                Route::post('/chat_save', [ZeusAIController::class, 'chatSave'])->name('chatSave');
+                Route::get("/all_conversations",[ZeusAIController::class,'getAllConversations']);
+                Route::delete("/delete/{id}",[ZeusAIController::class,'deleteConversation']);
+                Route::patch("/update/{id}",[ZeusAIController::class,'updateConversation']);
+            });
+            
             
             // user profile settings
             Route::prefix('settings')->name('settings.')->group(function () {
@@ -207,8 +218,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 
             // Verticals
             Route::prefix('vertical')->name('vertical.')->group(function(){
-                Route::get('{slug}', [VerticalController::class, 'panelVerticalList'])->name('name');
-                Route::get('{name}/{path}', [VerticalController::class, 'panelVerticalSingle'])->name('single');
+                Route::get('{slug}', [UserController::class, 'panelVerticalList'])->name('name');
+                Route::get('{name}/{path}', [UserController::class, 'panelVerticalSingle'])->name('single');
             });
 
         });
@@ -494,6 +505,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
 
             Route::get('/publications/index', [PublicationController::class, 'index'])->name('publications.index');
             Route::get('/publications/create/{id?}', [PublicationController::class, 'create'])->name('publications.create');
+            Route::get('/publications/updateStatus/{id?}', [PublicationController::class, 'updateStatus'])->name('publications.updateStatus');
             Route::get('/publications/delete/{id}', [PublicationController::class, 'delete'])->name('publications.delete');
             Route::post('/publications/save', [PublicationController::class, 'store']);
         });
@@ -545,7 +557,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
 
             Route::prefix('crawl')->name('crawl.')->group(function () {
                 Route::get('/', [VerticalController::class, 'verticalCrawlList'])->name('list');
+                Route::post('/log/{id?}', [VerticalController::class, 'verticalCrawlLog'])->name('log');
                 Route::post('/scrape', [VerticalController::class, 'verticalCrawlScrape'])->name('scrape');
+                Route::post('/schedule', [VerticalController::class, 'verticalCrawlSchedule'])->name('schedule');
                 Route::post('/resume', [VerticalController::class, 'verticalCrawlResume'])->name('resume');
                 Route::post('/runagain', [VerticalController::class, 'verticalCrawlRunAgain'])->name('runagain');
                 Route::post('/stop', [VerticalController::class, 'verticalCrawlStop'])->name('stop');
@@ -567,9 +581,16 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
         Route::get('/publications/{slug}', [PublicationController::class, 'viewPublication'])->name("publication.externalSite");
  
 
-        //Search
+        //Brave Search
         Route::post('/api/search', [SearchController::class, 'search']);
         Route::post('/api/brave_search', [BraveSearchController::class, 'search']);
+
+        Route::prefix('search')->name('search.')->group(function () {
+            Route::get("/images{slug?}",[BraveSearchController::class,'imageSearch'])->name('image');
+            Route::get("/news{slug?}",[BraveSearchController::class,'newsSearch'])->name('news');
+            Route::get("/videos{slug?}",[BraveSearchController::class,'videoSearch'])->name('video');
+            Route::get("/{slug?}",[BraveSearchController::class,'index'])->name('index');
+        }); 
 
         Route::get("/search/{slug?}",[BraveSearchController::class,'index'])->name('search.index');
         Route::get("/images", function(){
