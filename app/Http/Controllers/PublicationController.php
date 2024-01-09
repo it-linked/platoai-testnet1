@@ -63,19 +63,28 @@ class PublicationController extends Controller
 
     $slug = Str::slug($request->input('title'));
 
-        // Additional validation for uniqueness, if needed
-        // You might want to check if the generated slug already exists in the database
+      // Check if there is an ID in the request, indicating an update
+    if ($request->filled('publication_id')) {
+        $publication = Publication::findOrFail($request->input('publication_id'));
 
-        // Create the publication with the generated slug
+        // Update the existing publication
+        $publication->update([
+            'title' => $request->input('title'),
+            'slug' => $slug,
+            'external_link' => $request->input('external_link'),
+            'status' => $request->input('status', 1), // Default to 1 if not provided
+        ]);
+
+    } else {
+        // Create a new publication
         Publication::create([
             'title' => $request->input('title'),
             'slug' => $slug,
             'external_link' => $request->input('external_link'),
             'status' => $request->input('status', 1), // Default to 1 if not provided
         ]);
-       
 
-    //return redirect('/publications/create')->with('success', 'Publication created successfully!');
+    }
    
 }
 public function delete($id){

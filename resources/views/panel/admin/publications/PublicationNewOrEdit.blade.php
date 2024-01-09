@@ -13,7 +13,7 @@
                             </svg>
                             {{__('Back to dashboard')}}
                         </a>
-                        <a href="{{route('dashboard.admin.publications.create')}}" class="page-pretitle flex items-center">
+                        <a href="{{route('dashboard.admin.publications.index')}}" class="page-pretitle flex items-center">
                             / {{__('Back to Publication')}}
                         </a>
                     </div>
