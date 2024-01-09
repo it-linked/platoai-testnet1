@@ -157,6 +157,22 @@
     </ul>
 @endif
 
+@if(count($defix_search)>0)
+    <hr class="border-[2px]">
+    <h3 class="m-0 py-[0.75rem] px-3 border-solid border-b border-t-0 border-r-0 border-l-0 border-[--tblr-border-color] text-[1rem] font-medium">{{__('Defix Gateway')}}</h3>
+    <ul class="m-0 p-0 list-none">
+        @foreach($defix_search as $item)
+        <li class="p-2 px-3 border-solid border-b border-t-0 border-r-0 border-l-0 border-[--tblr-border-color] last:border-b-0 transition-colors hover:bg-slate-50  dark:hover:!bg-[rgba(255,255,255,0.05)]">
+			<a href="{{ route('dashboard.defix.externalSite', [$item->parent->slug,$item->slug]) }}#{{$item->slug}}" class="d-flex align-items-center text-heading !no-underline">
+				<span class="avatar w-[43px] h-[43px] [&_svg]:w-[20px] [&_svg]:h-[20px] relative !me-2">B</span>
+				{{ $item->title }}
+				<small class="ml-auto text-muted opacity-75">{{__('Defix Gateway')}}</small>
+			</a>
+		</li>
+        @endforeach
+    </ul>
+@endif
+
 @if(isset($result) and $result=='null')
 	<div class="p-6 font-medium text-center text-heading">
 		<h3 class="mb-2">{{__('No results.')}}</h3>

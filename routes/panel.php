@@ -31,6 +31,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\EmailTemplatesController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\VerticalController;
+use App\Http\Controllers\AiToolsController;
 use App\Http\Controllers\Gateways\WalletmaxpayController;
 use App\Http\Controllers\GoogleTTSController;
 use App\Http\Controllers\AdsController;
@@ -566,11 +567,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
         Route::prefix('vertical')->name('vertical.')->group(function () {
             Route::get('/', [VerticalController::class, 'verticalList'])->name('list');
 
-            Route::get('/feed', [VerticalController::class, 'verticalFeed'])->name('feed');
-
             Route::prefix('crawl')->name('crawl.')->group(function () {
                 Route::get('/', [VerticalController::class, 'verticalCrawlList'])->name('list');
-                Route::post('/log/{id?}', [VerticalController::class, 'verticalCrawlLog'])->name('log');
+                Route::get('/log/{id}', [VerticalController::class, 'verticalCrawlLog'])->name('log');
                 Route::post('/scrape', [VerticalController::class, 'verticalCrawlScrape'])->name('scrape');
                 Route::post('/schedule', [VerticalController::class, 'verticalCrawlSchedule'])->name('schedule');
                 Route::post('/resume', [VerticalController::class, 'verticalCrawlResume'])->name('resume');
@@ -590,6 +589,32 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
             Route::post('/save', [VerticalController::class, 'verticalAddOrUpdateSave']);
         });
 
+        // AiTools
+        Route::prefix('aitools')->name('aitool.')->group(function () {
+            Route::get('/', [AiToolsController::class, 'aiToolList'])->name('list');
+            Route::get('/add-or-update/{id?}', [AiToolsController::class, 'aitoolsAddOrUpdate'])->name('addOrUpdate');
+            Route::get('/delete/{id?}', [AiToolsController::class, 'aitoolsDelete'])->name('delete');
+            Route::post('/save', [AiToolsController::class, 'aitoolsAddOrUpdateSave']);
+
+            Route::prefix('crawl')->name('crawl.')->group(function () {
+                Route::get('/', [AiToolsController::class, 'aitoolsCrawlList'])->name('list');
+                Route::get('/log/{id}', [AiToolsController::class, 'aitoolsCrawlLog'])->name('log');
+                Route::post('/scrape', [AiToolsController::class, 'aitoolsCrawlScrape'])->name('scrape');
+                Route::post('/schedule', [AiToolsController::class, 'aitoolsCrawlSchedule'])->name('schedule');
+                Route::post('/resume', [AiToolsController::class, 'aitoolsCrawlResume'])->name('resume');
+                Route::post('/runagain', [AiToolsController::class, 'aitoolsCrawlRunAgain'])->name('runagain');
+                Route::post('/stop', [AiToolsController::class, 'aitoolsCrawlStop'])->name('stop');
+            });
+
+            Route::prefix('category')->name('category.')->group(function () {
+                Route::get('/', [AiToolsController::class, 'aitoolsCategoryList'])->name('list');
+                Route::get('/add-or-update/{id?}', [AiToolsController::class, 'aitoolsCategoryAddOrUpdate'])->name('addOrUpdate');
+                Route::get('/delete/{id?}', [AiToolsController::class, 'verticalCategoryDelete'])->name('delete');
+                Route::post('/save', [AiToolsController::class, 'aitoolsCategoryAddOrUpdateSave']);
+            });
+
+        });
+
         //Publications 
         Route::get('/publications/{slug}', [PublicationController::class, 'viewPublication'])->name("publication.externalSite");
         
@@ -599,14 +624,20 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
 
         //Brave Search
         Route::post('/api/search', [SearchController::class, 'search']);
-        Route::post('/api/brave_search', [BraveSearchController::class, 'search']);
 
-        Route::prefix('search')->name('search.')->group(function () {
+        //Brave Search
+        Route::prefix('brave/search')->name('search.')->group(function () {
+            Route::post('/autosuggest', [BraveSearchController::class,'autoSuggest'])->name('suggest');
             Route::get("/images{slug?}",[BraveSearchController::class,'imageSearch'])->name('image');
             Route::get("/news{slug?}",[BraveSearchController::class,'newsSearch'])->name('news');
             Route::get("/videos{slug?}",[BraveSearchController::class,'videoSearch'])->name('video');
             Route::get("/{slug?}",[BraveSearchController::class,'index'])->name('index');
-        }); 
+        });  
+
+        //Plato Directory Search
+        Route::prefix('directory/search')->name('directory.search.')->group(function () {
+            Route::get("/{slug?}",[DirectorySearchController::class,'index'])->name('index');
+        });
 
         Route::get("/search/{slug?}",[BraveSearchController::class,'index'])->name('search.index');
         Route::get("/images", function(){

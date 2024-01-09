@@ -73,7 +73,7 @@
                         <div class="dropdown-menu {{ activeRouteBulkShow(['dashboard.defix.externalSite']) }}">
                             @foreach($defix_links as $item)
                                 <span class="py-0">
-                                    <ul class="sub-nav navbar-nav px-3">
+                                    <ul class="navbar-nav ps-1">
                                         @php
                                             $urlSegments = explode('/', request()->url());
                                             $slugIndex = array_search($item->slug, $urlSegments);
@@ -95,7 +95,7 @@
                                             <div class="dropdown-menu {{ $baseURL == route('dashboard.defix.externalSite', [$item->slug]) ? 'show' : '' }}">
                                                 @foreach($item->children as $children)
                                                     <span id="{{$children->slug}}"></span>
-                                                    <a class="nav-link {{ request()->url() == route('dashboard.defix.externalSite', [$item->slug, $children->slug]) ? 'show active' : '' }}" href="{{route('dashboard.defix.externalSite', [$item->slug, $children->slug])}}">
+                                                    <a class="nav-link ps-1 {{ request()->url() == route('dashboard.defix.externalSite', [$item->slug, $children->slug]) ? 'show active' : '' }}" href="{{route('dashboard.defix.externalSite', [$item->slug, $children->slug])}}#{{$children->slug}}">
                                                         {{ __($children->title) }}
                                                     </a>
                                                 @endforeach
@@ -206,10 +206,10 @@
                             </a>
                             @endif
                            
-                            <a class="nav-link {{ route('dashboard.user.zeusai.chat') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.user.zeusai.chat')}}">
+                            <!--a class="nav-link {{ route('dashboard.user.zeusai.chat') == url()->current() ? 'active' : '' }}" href="{{route('dashboard.user.zeusai.chat')}}">
                             {{ __('Zeus AI')}} 
 
-                            </a>
+                            </a-->
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -652,12 +652,31 @@
                     </li>
 
                     <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle  {{activeRoute('dashboard.aitool.list')}}" href="{{route('dashboard.aitool.list')}}"  data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+                            <span class="nav-link-icon" style="stroke:unset">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 64 64"><g fill="#04a1ff" data-name="Ai" class="color222 svgShape"><path d="M34.5 41.5a1.5 1.5 0 0 1-1.5-1.26l-2-12.65a2.49 2.49 0 0 0-4.92 0L24 40.24a1.5 1.5 0 1 1-3-.48l2.06-12.65a5.49 5.49 0 0 1 10.84 0L36 39.76a1.5 1.5 0 0 1-1.24 1.72Z" fill="#04a1ff" class="color000 svgShape"></path><path d="M28.52 34.46h-4.87a1.5 1.5 0 0 1 0-3h4.87a1.5 1.5 0 1 1 0 3zM41.5 41.5A1.5 1.5 0 0 1 40 40V29a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-1.5 1.5zm0-15.19a1.5 1.5 0 1 1 .29-3l.28.08a1.59 1.59 0 0 1 .26.14 1.45 1.45 0 0 1 .23.19 1.5 1.5 0 0 1 0 2.12 1.34 1.34 0 0 1-.49.32 1.39 1.39 0 0 1-.57.15z" fill="#04a1ff" class="color000 svgShape"></path><path d="M32 55.5a23.35 23.35 0 0 1-13.07-4A1.5 1.5 0 1 1 20.6 49a20.47 20.47 0 1 0-4.9-4.6 1.5 1.5 0 1 1-2.38 1.82A23.5 23.5 0 1 1 32 55.5Z" fill="#04a1ff" class="color000 svgShape"></path></g></svg>
+                            </span>
+                            <span class="flex items-center transition-[opacity,transform] nav-link-title grow">
+                                {{__('Ai Tools')}}
+                            </span>
+                        </a>
+                        <div class="dropdown-menu {{ activeRouteBulkShow( ['dashboard.aitool.list', 'dashboard.aitool.category.list'] ) }}">
+                            <a class="dropdown-item {{activeRoute('dashboard.aitool.list')}}" href="{{route('dashboard.aitool.list')}}">
+                                {{__('Listing')}}
+                            </a>
+                            <a class="dropdown-item {{activeRoute('dashboard.aitool.category.list')}}" href="{{route('dashboard.aitool.category.list')}}">
+                                {{__('Category')}}
+                            </a>
+                            <a class="dropdown-item {{activeRoute('dashboard.aitool.crawl.list')}}" href="{{route('dashboard.aitool.crawl.list')}}">
+                                {{__('Crawl')}}
+                            </a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle  {{activeRoute('dashboard.vertical.list')}}" href="{{route('dashboard.vertical.list')}}" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
                             <span class="nav-link-icon" style="stroke:unset">
-                                <svg style="position:relative;left:2px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Category">
-                                    <path fill="#6c7a91" d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z">
-                                    </path>
-                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" data-stroke="0" viewBox="0 0 24 24" id="communication-tower"><g data-name="Layer 2"><path d="M15 12.79a3 3 0 1 0-4 2.82v4.19H9v2h6v-2h-2v-4.19a3 3 0 0 0 2-2.82Zm-3-1a1 1 0 1 1-1 1 1 1 0 0 1 1-1Z" stroke-width="0" fill="#04a1ff"></path><path d="M16.94 17.75a6.93 6.93 0 0 0 2.06-5 7 7 0 1 0-14 0 6.93 6.93 0 0 0 2.06 5l1.41-1.42A4.94 4.94 0 0 1 7 12.79a5 5 0 1 1 10 0 4.94 4.94 0 0 1-1.46 3.53Z" stroke-width="0"  fill="#04a1ff"></path><path d="M12 1.77a11 11 0 0 0-7.78 18.8l1.41-1.42a9 9 0 1 1 12.73 0l1.41 1.42A11 11 0 0 0 12 1.77Z" stroke-width="0"  fill="#04a1ff"></path></g></svg>
                             </span>
                             <span class="flex items-center transition-[opacity,transform] nav-link-title grow">
                                 {{__('Vertical')}}
@@ -690,7 +709,6 @@
                             </span>
                         </a>
                     </li>
-                   
                     <li class="nav-item">
                         <a class="nav-link {{activeRoute('dashboard.admin.publications.index')}}" href="{{route('dashboard.admin.publications.index')}}">
                             <span class="nav-link-icon">
