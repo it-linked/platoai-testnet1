@@ -39,6 +39,7 @@ use App\Http\Controllers\PlatoAISearchController;
 use App\Http\Controllers\PlatoNetworkController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\ZeusAIController;
+use App\Http\Controllers\DefiXController;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -503,11 +504,23 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 })->name('index');
             });
 
+            //Publication admin links
             Route::get('/publications/index', [PublicationController::class, 'index'])->name('publications.index');
             Route::get('/publications/create/{id?}', [PublicationController::class, 'create'])->name('publications.create');
             Route::get('/publications/updateStatus/{id?}', [PublicationController::class, 'updateStatus'])->name('publications.updateStatus');
             Route::get('/publications/delete/{id}', [PublicationController::class, 'delete'])->name('publications.delete');
             Route::post('/publications/save', [PublicationController::class, 'store']);
+
+
+             //Publication admin links
+             Route::prefix('defix-gateway')->name('defix.')->group(function(){
+                Route::get('/index/{parent_id?}', [DefiXController::class, 'index'])->name('index');
+                Route::get('/create/{parent_id?}', [DefiXController::class, 'create'])->name('create');
+                Route::get('/edit/{id}/{parent_id?}', [DefiXController::class, 'edit'])->name('edit');
+                Route::get('/updateStatus/{id?}', [DefiXController::class, 'updateStatus'])->name('updateStatus');
+                Route::get('/delete/{id}', [DefiXController::class, 'delete'])->name('delete');
+                Route::post('/save', [DefiXController::class, 'store']);
+             });
         });
 
         
@@ -577,8 +590,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
             Route::post('/save', [VerticalController::class, 'verticalAddOrUpdateSave']);
         });
 
-        //Publications
+        //Publications 
         Route::get('/publications/{slug}', [PublicationController::class, 'viewPublication'])->name("publication.externalSite");
+        
+        //Publications 
+        Route::get('/defix-gateway/{slug}/{slug_sub?}/', [DefiXController::class, 'viewDefixPage'])->name("defix.externalSite");
  
 
         //Brave Search

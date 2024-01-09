@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\SettingTwo;
 use App\Models\UserOpenai;
 use App\Models\Publication;
+use App\Models\DefiX;
 use App\Services\MemoryLimit;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Artisan;
@@ -90,7 +91,9 @@ class AppServiceProvider extends ServiceProvider
                 $publications = Publication::where("status",1)->orderBy('title','asc')->get();
                 View::share('publications', $publications);
 
+                $defix =   DefiX::whereNull('parent_id')->orderBy('title', 'asc')->get();
 
+                View::share('defix_links', $defix);
 
 
                 $voiceoverCheck = OpenAIGenerator::where('slug', 'ai_voiceover')->first();

@@ -59,6 +59,54 @@
                             </span>
                         </a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ activeRoute(['dashboard.defix.externalSite']) }}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+                            <span class="nav-link-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"></path>
+                                </svg>
+                            </span>
+                            <span class="flex items-center transition-[opacity,transform] nav-link-title grow">
+                                {{__('Defix Gateway')}}
+                            </span>
+                        </a>
+                        <div class="dropdown-menu {{ activeRouteBulkShow(['dashboard.defix.externalSite']) }}">
+                            @foreach($defix_links as $item)
+                                <span class="py-0">
+                                    <ul class="sub-nav navbar-nav px-3">
+                                        @php
+                                            $urlSegments = explode('/', request()->url());
+                                            $slugIndex = array_search($item->slug, $urlSegments);
+                                        
+                                            if ($slugIndex !== false) {
+                                                $baseURL = implode('/', array_slice($urlSegments, 0, $slugIndex + 1));
+                                            } else {
+                                                // Handle the case where $item->slug is not found in the URL
+                                                $baseURL = request()->url();
+                                            }
+                                        @endphp
+                                    
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle {{ $baseURL == route('dashboard.defix.externalSite', [$item->slug]) ? 'show' : '' }}" href="#" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="{{ $baseURL == route('dashboard.defix.externalSite', [$item->slug]) ? true : false }}">
+                                                <span class="flex items-center transition-[opacity,transform] nav-link-title grow">
+                                                    {{ __($item->title) }}
+                                                </span>
+                                            </a>
+                                            <div class="dropdown-menu {{ $baseURL == route('dashboard.defix.externalSite', [$item->slug]) ? 'show' : '' }}">
+                                                @foreach($item->children as $children)
+                                                    <span id="{{$children->slug}}"></span>
+                                                    <a class="nav-link {{ request()->url() == route('dashboard.defix.externalSite', [$item->slug, $children->slug]) ? 'show active' : '' }}" href="{{route('dashboard.defix.externalSite', [$item->slug, $children->slug])}}">
+                                                        {{ __($children->title) }}
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </span>
+                            @endforeach
+                        </div>
+                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('dashboard.external-site','plato-aistream')}}">
                             <span class="nav-link-icon">
@@ -642,6 +690,7 @@
                             </span>
                         </a>
                     </li>
+                   
                     <li class="nav-item">
                         <a class="nav-link {{activeRoute('dashboard.admin.publications.index')}}" href="{{route('dashboard.admin.publications.index')}}">
                             <span class="nav-link-icon">
@@ -651,6 +700,18 @@
                             </span>
                             <span class="flex items-center transition-[opacity,transform] nav-link-title grow">
                                 {{__('Publications')}}
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{activeRoute('dashboard.admin.defix.index')}}" href="{{route('dashboard.admin.defix.index')}}">
+                            <span class="nav-link-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"></path>
+                                </svg>
+                            </span>
+                            <span class="flex items-center transition-[opacity,transform] nav-link-title grow">
+                                {{__('DefiX Gateway')}}
                             </span>
                         </a>
                     </li>
