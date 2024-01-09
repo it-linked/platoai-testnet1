@@ -1014,11 +1014,20 @@
                 processData: false,
                 success: function(responseData) {
                     if (responseData.newConversation) {
-                        console.log(responseData.chat_id);
-                        $("#chat_id").val(responseData.chat_id);
-                        // Prepend a new group with the chat name to the conversation container
-                        //prependChatGroup(responseData.title);
+                        let chat_id=responseData.conversation.id;
+                        $("#chat_id").val(chat_id);
 
+                        // Check if the "Today" group exists
+                        var todayGroup = allConversationsDiv.find('.group-title:contains("Today")').last();
+
+                        if (todayGroup.length > 0) {
+                            // If the "Today" group exists, append the conversation to its ol
+                            var todayOl = todayGroup.next('ol');
+                            appendConversationToGroup(chat_id, responseData.conversation.title, todayOl);
+                        } else {
+                            // If the "Today" group doesn't exist, create a new group and append the conversation
+                            prependChatGroup("Today", responseData.consersation.title, chat_id);
+                        }
                     }
                 },
                 error: function(error) {
@@ -1053,7 +1062,7 @@
         var allConversationsDiv = $('#all_conversations');
         // Function to fetch conversations and append them to the container
         function fetchConversations(page) {
-            
+
             $.ajax({
                 url: '/dashboard/user/zeusai/all_conversations',
                 method: 'GET',
@@ -1067,7 +1076,7 @@
                     // Update the content of the 'all_conversations' div with the grouped conversations
                     updateConversations(groupedConversations);
                     isLoading = false; // Reset the loading flag
-                   
+
 
                 },
                 error: function(error) {
@@ -1120,12 +1129,12 @@
                     // Check if a group with the same title already exists
                     var existingGroup = allConversationsDiv.find('div:contains("' + group + '")');
                     var groupOl;
-                    
+
                     if (existingGroup.length > 0) {
                         // If the group exists, use its ol
                         console.log(existingGroup)
                         groupOl = existingGroup.find('ol');
-                        console.log(groupOl,group);
+                        console.log(groupOl, group);
                     } else {
                         // If the group doesn't exist, create a new group
                         var groupHtml = $('#conversation_items_group').html();
@@ -1140,7 +1149,7 @@
                     }
                     console.log(groupOl);
                     // Loop through conversations for the current group and append them to the ol
-                    groupedConversations[group].forEach(function (conversation) {
+                    groupedConversations[group].forEach(function(conversation) {
                         // Clone the conversation_item template
                         var itemHtml = $('#conversation_item').html();
                         itemHtml = itemHtml.replace('--chatName--', conversation.title);
@@ -1154,7 +1163,34 @@
                 }
             }
         }
-        
+
+        // Function to prepend a new group with the chat name to the conversation container
+        function prependChatGroup(groupTitle, chatName, chatId) {
+            var groupHtml = $('#conversation_items_group').html();
+            groupHtml = groupHtml.replace('--GroupTitle--', groupTitle);
+
+            // Append the group HTML to the 'all_conversations' div
+            allConversationsDiv.prepend(groupHtml);
+
+            // Reference to the ol within the current group
+            var groupOl = allConversationsDiv.find('ol').first();
+
+            // Append the conversation to the ol within the current group
+            appendConversationToGroup(chatId, chatName, groupOl);
+        }
+
+        // Function to append a conversation to a group
+        function appendConversationToGroup(chatId, chatName, groupOl) {
+            // Clone the conversation_item template
+            var itemHtml = $('#conversation_item').html();
+            itemHtml = itemHtml.replace('--chatName--', chatName);
+            itemHtml = itemHtml.replace('--projectionId--', chatId);
+            itemHtml = itemHtml.replace('--route--', '{{ route('dashboard.user.zeusai.chat') }}' + '/' + chatId);
+
+            // Append the updated item HTML to the ol within the current group
+            groupOl.append(itemHtml);
+        }
+
 
         function isScrollAtBottom() {
             var scrollHeight = allConversationsDiv[0].scrollHeight;
@@ -1163,14 +1199,14 @@
         }
 
         allConversationsDiv.on('scroll', function() {
-            if (isScrollAtBottom()) { 
+            if (isScrollAtBottom()) {
                 if (isLoading) {
-                return; // If a request is already in progress, do nothing
-            }
+                    return; // If a request is already in progress, do nothing
+                }
 
-            isLoading = true; // Set the loading flag to true
-            page++;              
-            fetchConversations(page);
+                isLoading = true; // Set the loading flag to true
+                page++;
+                fetchConversations(page);
             }
         });
         // Function to delete conversation

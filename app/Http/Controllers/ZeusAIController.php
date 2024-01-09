@@ -139,7 +139,7 @@ class ZeusAIController extends Controller
         }
         $user->save();
 
-        return response()->json(['newConversation'=>$new,'title'=>$chat->title,'chat_id'=>$chat->id]);
+        return response()->json(['newConversation'=>$new,'conversation'=>$chat]);
     }
     public function updateConversation(Request $request, $id)
     {
